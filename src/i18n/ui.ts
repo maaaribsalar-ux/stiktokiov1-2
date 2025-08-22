@@ -356,4 +356,5 @@ export const ui = {
   'blog.prev': 'Precedente',
   'blog.next': 'Successivo',
 },
+  
 } as const;
