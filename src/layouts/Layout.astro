@@ -1,0 +1,149 @@
+---
+import { ViewTransitions } from "astro:transitions";
+import Footer from "@components/footer.astro";
+import Navbar from "@components/navbar/navbar.astro";
+import "@fontsource-variable/inter";
+import "./index.css";
+
+// Remove old astro-i18next imports
+// import { HeadHrefLangs } from "astro-i18next/components";
+// import i18next from "i18next";
+
+// Add new built-in i18n imports
+import { getLangFromUrl, useTranslations } from "../i18n/utils";
+import { languages } from "../i18n/ui";
+import { getAbsoluteLocaleUrl } from "astro:i18n";
+import { SEO } from "astro-seo";
+
+export interface Props {
+	title?: string;
+	lang?: string;
+}
+
+// Create safe URL object to prevent undefined errors during build
+const safeUrl = Astro.url || new URL('/', Astro.site || 'http://localhost:4321');
+
+// Get current language and translations - using safe URL
+const currentLang = getLangFromUrl(safeUrl);
+const t = useTranslations(currentLang);
+
+// Use provided lang or detect from URL
+const pageLang = Astro.props.lang || currentLang;
+
+const canonicalURL = new URL(safeUrl.pathname || '/', Astro.site).toString();
+const resolvedImageWithDomain = new URL(
+	"/meta/opengraph.webp",
+	Astro.site,
+).toString();
+
+const { title } = Astro.props;
+const makeTitle = title
+	? `${title} | TikTokio`
+	: "TikTokio: TikTok Downloader - Download TikTok Videos no Watermark";
+
+// Simplified and safe hreflang generation
+function generateHrefLangs() {
+	// Skip hreflang generation during static build to avoid errors
+	if (!safeUrl) {
+		return [];
+	}
+	
+	try {
+		const baseUrl = Astro.site?.toString() || 'https://zandkhqastro.vercel.app';
+		
+		// Generate simple hreflang links
+		return Object.keys(languages).map(lang => {
+			let href;
+			if (lang === 'en') {
+				href = baseUrl;
+			} else {
+				href = `${baseUrl}${lang}/`;
+			}
+			return { lang, href };
+		});
+	} catch (error) {
+		// Return empty array if any error occurs during build
+		return [];
+	}
+}
+
+const hrefLangs = generateHrefLangs();
+---
+
+<!doctype html>
+<html lang={pageLang}>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<meta name="theme-color" content="#ffffff" />
+		
+		<!-- Generate hreflang links manually -->
+		{hrefLangs.map(({ lang, href }) => (
+			<link rel="alternate" hreflang={lang} href={href} />
+		))}
+		
+		<ViewTransitions />
+		<!-- Global CSS -->
+		<SEO
+			title={makeTitle}
+			description="TikTokio - Tiktok downloader to online download tiktok videos in mp4 without watermark easily, Tiktok video downloader is Fast, easy and works on any device"
+			canonical={canonicalURL}
+			openGraph={{
+				basic: {
+					url: canonicalURL,
+					type: "website",
+					title: `TikTokio: TikTok Downloader - Download TikTok Videos no Watermark`,
+					image: resolvedImageWithDomain,
+				},
+				image: {
+					alt: "TikTokio: TikTok Downloader",
+				},
+			}}
+		/>
+		
+		<!-- Twitter Card -->
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={makeTitle} />
+		<meta name="twitter:description" content="TikTokio - Tiktok downloader to online download tiktok videos in mp4 without watermark easily, Tiktok video downloader is Fast, easy and works on any device" />
+		<meta name="twitter:image" content={resolvedImageWithDomain} />
+		<meta name="twitter:site" content="@YourTwitterHandle" />
+		<meta name="twitter:creator" content="@tiktokio_cam" />
+		<script is:inline>
+			function handleThemeChange() {
+				if (localStorage.theme === "dark" || (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+					document.documentElement.classList.add("dark");
+				} else {
+					document.documentElement.classList.remove("dark");
+				}
+			}
+			handleThemeChange();
+			document.removeEventListener("astro:after-swap", handleThemeChange);
+			document.addEventListener("astro:after-swap", handleThemeChange);
+		</script>
+		<script src="/src/pwa.ts"></script>
+	</head>
+	<body class="dark:bg-stone-950">
+		<header class="relative">
+			<Navbar />
+			
+		</header>
+		<main>
+			<slot />
+		</main>
+		<Footer />
+		<style is:global>
+			/* Improve Page speed */
+			/* https://css-tricks.com/almanac/properties/c/content-visibility/ */
+			img {
+				content-visibility: auto;
+			}
+			
+			/* Ensure header has relative positioning for language selector */
+			header {
+				position: relative;
+			}
+		</style>
+	</body>
+</html>

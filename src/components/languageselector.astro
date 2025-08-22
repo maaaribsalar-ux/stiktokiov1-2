@@ -1,0 +1,99 @@
+---
+// Remove old astro-i18next import
+// import { LanguageSelector } from "astro-i18next/components";
+// Add new built-in i18n imports
+import { getLangFromUrl } from "../i18n/utils";
+import { languages } from "../i18n/ui";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { Icon } from "astro-icon/components";
+
+const {
+	icon = "",
+	languageMapping = { en: "English", it: "Italiano" },
+	showFlag = false,
+	class: className = "",
+	...rest
+} = Astro.props;
+
+// Create safe URL object to prevent undefined errors during build
+const safeUrl = Astro.url || new URL('/', Astro.site || 'http://localhost:4321');
+
+// Get current language and page path safely
+const currentLang = getLangFromUrl(safeUrl);
+const currentPath = safeUrl.pathname || '/';
+
+// Function to get the page path without language prefix
+function getPagePath(fullPath: string, lang: string): string {
+	// Handle undefined or empty path
+	if (!fullPath || fullPath === '/') return '';
+	
+	// Remove language prefix to get the base path
+	if (lang === 'en') {
+		// For default language, path might not have prefix
+		return fullPath === '/' ? '' : fullPath;
+	} else {
+		// Remove /it prefix
+		const pathWithoutLang = fullPath.replace(`/${lang}`, '') || '/';
+		return pathWithoutLang === '/' ? '' : pathWithoutLang;
+	}
+}
+
+const basePath = getPagePath(currentPath, currentLang);
+
+// Generate language options
+const languageOptions = Object.entries(languages).map(([code, name]) => {
+	const url = getRelativeLocaleUrl(code, basePath);
+	return {
+		code,
+		name: languageMapping[code] || name,
+		url,
+		isCurrent: code === currentLang
+	};
+});
+---
+
+<div
+	class="flex items-center pl-2 rounded-md text-sm font-semibold text-center transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 border outline-2 outline-offset-2 border-gray-300 text-gray-700 hover:border-gray-400 active:bg-gray-100 dark:active:bg-stone-950"
+	aria-label="Language selection">
+	<Icon name="ion:language" class="w-5 dark:text-white" />
+	<label for="language-selector" class="sr-only">Choose a language</label>
+	
+	<select
+		id="language-selector"
+		class={`appearance-none cursor-pointer pl-3 pr-2 py-1.5 rounded-md dark:bg-stone-950 dark:text-white focus-visible:outline-none ${className}`}
+		aria-label="Choose a language"
+		onchange="window.location.href = this.value"
+		{...rest}>
+		{languageOptions.map(option => (
+			<option 
+				value={option.url} 
+				selected={option.isCurrent}
+				class="dark:bg-stone-950 dark:text-white">
+				{option.name}
+			</option>
+		))}
+	</select>
+</div>
+
+<style>
+	/* Custom select arrow for better cross-browser compatibility */
+	select {
+		background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+		background-position: right 0.5rem center;
+		background-repeat: no-repeat;
+		background-size: 1.5em 1.5em;
+		padding-right: 2.5rem;
+	}
+	
+	/* Dark mode arrow */
+	@media (prefers-color-scheme: dark) {
+		select {
+			background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%9ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+		}
+	}
+	
+	/* Ensure dark mode styles work with Tailwind's dark class */
+	.dark select {
+		background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%9ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+	}
+</style>

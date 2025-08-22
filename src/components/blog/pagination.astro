@@ -1,0 +1,59 @@
+---
+import Link from "@components/ui/link.astro";
+// Remove old astro-i18next imports
+// import { localizePath } from "astro-i18next";
+// import { t } from "i18next";
+
+// Add new built-in i18n imports
+import { getLangFromUrl, useTranslations } from "../../i18n/utils";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { Icon } from "astro-icon/components";
+
+export interface Props {
+	prevUrl: string;
+	nextUrl: string;
+	prevText?: string;
+	nextText?: string;
+	class?: string;
+}
+
+const {
+	prevUrl,
+	nextUrl,
+	prevText = "blog.prev",
+	nextText = "blog.next",
+	class: className,
+} = Astro.props;
+
+// Get current language and create translation function
+const safeUrl = Astro.url || new URL('/', Astro.site || 'http://localhost:4321');
+const lang = getLangFromUrl(safeUrl);
+const t = useTranslations(lang);
+
+// Helper function to create localized paths
+function localizePath(path: string) {
+	if (!path) return path;
+	return getRelativeLocaleUrl(lang, path);
+}
+---
+
+{
+	(prevUrl || nextUrl) && (
+		<div class:list={["container flex", className]}>
+			<div class="flex flex-row mx-auto container justify-center gap-8">
+				<Link href={localizePath(prevUrl)} style="muted" class={`${!prevUrl ? "invisible" : ""}`}>
+					<div class="flex flex-row align-middle">
+						<Icon name="tabler:chevron-left" class="w-6 h-6" />
+						<p class="ml-2">{t(prevText)}</p>
+					</div>
+				</Link>
+				<Link href={localizePath(nextUrl)} style="muted" class={`${!nextUrl ? "invisible" : ""}`}>
+					<div class="flex flex-row align-middle">
+						<span class="mr-2">{t(nextText)}</span>
+						<Icon name="tabler:chevron-right" class="w-6 h-6" />
+					</div>
+				</Link>
+			</div>
+		</div>
+	)
+}
