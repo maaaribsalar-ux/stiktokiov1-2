@@ -22,7 +22,7 @@ export const ui = {
 
     // Hero section
     'hero.title': 'TikTokio - Free TikTok Video Downloader',
-    'hero.subtitle': 'Download TikTok Videos Online - No Watermark TikTok Downloader',
+    'hero.subtitle': 'Download TikTok Videos Online - No Watermark TikTok Downloader to Download tiktok videos',
     'hero.tiktok_downloader_title': 'TikTokio - TikTok Downloader Online',
     'hero.tiktok_downloader_subtitle': 'Download and Save TikTok Videos Without Watermark.',
     'hero.download_tiktok_video_title': 'TikTokio - Download TikTok Video Without Watermark',
