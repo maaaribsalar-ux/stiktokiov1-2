@@ -810,7 +810,7 @@ de: {
   'faq.question5': 'Funktioniert TikTokio - TikTok-Video-Downloader, wenn ich Inhalte mehrmals herunterlade?',
   'faq.answer5': 'Ja, TikTokio - TikTok-Video-Downloader funktioniert jedes Mal zuverlässig. Es gibt keine Begrenzung, wie oft Sie denselben oder unterschiedlichen Inhalt herunterladen können. Die Server sind optimiert, um wiederholte Anfragen zu bewältigen und eine konsistente Leistung für alle Ihre Downloads zu gewährleisten.',
   'faq.question6': 'Wie kann ich Videos verwenden, die mit dem TikTok-Video-Downloader heruntergeladen wurden?',
-  'faq.question6': 'Videos vom TikTok-Video-Downloader können für die Offline-Ansicht, Content-Sammlungen, Bildungszwecke, Präsentationen oder das Teilen auf anderen Plattformen verwendet werden. Die heruntergeladenen MP4-Dateien sind mit allen gängigen Geräten und Videoplayern kompatibel.',
+  'faq.answer6': 'Videos vom TikTok-Video-Downloader können für die Offline-Ansicht, Content-Sammlungen, Bildungszwecke, Präsentationen oder das Teilen auf anderen Plattformen verwendet werden. Die heruntergeladenen MP4-Dateien sind mit allen gängigen Geräten und Videoplayern kompatibel.',
   'faq.question7': 'Ist TikTokio - TikTok-Video-Downloader mit allen TikTok-Inhaltstypen kompatibel?',
   'faq.answer7': 'Der TikTok-Video-Downloader funktioniert mit allen TikTok-Inhaltstypen, einschließlich regulären Videos, Reels, Stories, IGTV-Videos und Karussell-Posts, die Videos enthalten. Er wird regelmäßig aktualisiert, um Änderungen der TikTok-Plattform zu berücksichtigen.',
   'faq.question8': 'Sind meine Daten privat, wenn ich den TikTok-Video-Downloader verwende?',
