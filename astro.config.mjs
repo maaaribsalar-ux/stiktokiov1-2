@@ -14,7 +14,7 @@ import tailwindcss from "@tailwindcss/vite";
 // https://astro.build/config
 export default defineConfig({
   output: "server",
-  site: "https://zandkhqastro.vercel.app",
+  site: "https://tiktokio.cam/",
   adapter: vercel(),
 
   // Add Astro's built-in i18n configuration
