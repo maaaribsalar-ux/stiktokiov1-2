@@ -226,7 +226,7 @@ function InputScreen({}: Props) {
                 fetchData();
               }}
             >
-              <div class="relative flex-grow">
+              <div class="relative flex-grow rounded bg-white">
                 <input type="text"
                   value={url()}
                   onInput={(e) => {
