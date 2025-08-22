@@ -20,7 +20,7 @@ export default defineConfig({
   // Add Astro's built-in i18n configuration
   i18n: {
     defaultLocale: "en",
-    locales: ["en", "it"],
+    locales: ["en", "it", "ar", "fr", "de", "es", "hi", "id", "ru", "pt", "ko", "tl", "nl", "ms", "tr"],
     routing: {
       prefixDefaultLocale: false, // /about for English, /it/about for Italian
     },
