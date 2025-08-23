@@ -1,10 +1,27 @@
 ---
-import Container from "@components/container.astro";
-import Sectionhead from "@components/sectionhead.astro";
-import Button from "@components/ui/button.astro";
 import Layout from "@layouts/Layout.astro";
-import { changeLanguage } from "i18next";
-changeLanguage("en");
+
+// Remove old astro-i18next imports
+// import { localizePath } from "astro-i18next";
+// import { changeLanguage } from "i18next";
+// changeLanguage("en");
+
+// Add new built-in i18n imports
+import { getLangFromUrl, useTranslations } from "../i18n/utils";
+import { getRelativeLocaleUrl } from "astro:i18n";
+
+// Get current language and create translation function
+const safeUrl = Astro.url || new URL('/', Astro.site || 'http://localhost:4321');
+const lang = getLangFromUrl(safeUrl);
+const t = useTranslations(lang);
+
+// Helper function to create localized paths
+function localizePath(path: string) {
+	if (!path || (path && path.startsWith('http')) || path === '#') return path;
+	return getRelativeLocaleUrl(lang, path);
+}
+
+const title = "About Us - Tiktokio";
 
 const values = [
 	{
