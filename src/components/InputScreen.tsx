@@ -1,5 +1,5 @@
 import { toast, Toaster } from "solid-toast";
-import { createSignal, onCleanup } from "solid-js";
+import { createSignal } from "solid-js";
 
 interface TikTokData {
   status: string | null;
@@ -26,7 +26,6 @@ function InputScreen({}: Props) {
   const [data, setData] = createSignal<TikTokData | null>(null);
   const [loading, setLoading] = createSignal(false);
   const [error, setError] = createSignal("");
-  const [adLoaded, setAdLoaded] = createSignal(false);
 
   const fetchData = async () => {
     setLoading(true);
@@ -35,7 +34,6 @@ function InputScreen({}: Props) {
       let json = await res.json();
       if (json.status == "error") throw new Error(json.message);
       setData(json ?? null);
-      loadAd();
       setError("");
     } catch (error) {
       toast.error(error.message, {
@@ -61,78 +59,6 @@ function InputScreen({}: Props) {
       toast.error("Clipboard access denied");
     }
   };
-
-  const loadAd = () => {
-    const adContainer = document.getElementById("ad-banner");
-    if (!adContainer) return;
-
-    // Clear previous content
-    adContainer.innerHTML = '';
-
-    // Create the AC script if it doesn't exist
-    if (!document.getElementById("aclib")) {
-      const script = document.createElement("script");
-      script.id = "aclib";
-      script.src = "[invalid url, do not cite]
-      script.async = true;
-      script.onload = () => {
-        if (typeof aclib !== 'undefined') {
-          runAdcashBanner();
-        } else {
-          showFallbackAd();
-        }
-      };
-      script.onerror = () => {
-        showFallbackAd();
-      };
-      document.body.appendChild(script);
-    } else {
-      // Script already exists, just run the banner
-      if (typeof aclib !== 'undefined') {
-        runAdcashBanner();
-      } else {
-        showFallbackAd();
-      }
-    }
-  };
-
-  const runAdcashBanner = () => {
-    const adContainer = document.getElementById("ad-banner");
-    if (!adContainer) return;
-
-    try {
-      adContainer.innerHTML = '<div id="ac-banner"></div>';
-      aclib.runBanner({
-        zoneId: '9480206',
-        width: 336,
-        height: 280,
-        container: document.getElementById("ac-banner")
-      });
-      setAdLoaded(true);
-    } catch (e) {
-      console.error("Adcash error:", e);
-      showFallbackAd();
-    }
-  };
-
-  const showFallbackAd = () => {
-    const adContainer = document.getElementById("ad-banner");
-    if (!adContainer) return;
-    
-    adContainer.innerHTML = `
-      <div style="width:336px;height:280px;background:#f5f5f5;display:flex;align-items:center;justify-content:center;border-radius:8px;border:1px dashed #ddd;">
-        <div style="text-align:center;color:#666;">
-          <p>Advertisement</p>
-          <p style="font-size:12px;margin-top:8px;">Ad failed to load</p>
-        </div>
-      </div>
-    `;
-  };
-
-  onCleanup(() => {
-    const script = document.getElementById("aclib");
-    if (script) script.remove();
-  });
 
   return (
     <div class="max-w-6xl mx-auto mt-8 px-4">
@@ -162,14 +88,14 @@ function InputScreen({}: Props) {
                 <button type="button" 
                   onClick={handlePaste} 
                   class="absolute right-3 top-1/2 transform -translate-y-1/2 bg-gray-700/80 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-all duration-300 flex items-center gap-2">
-                  <svg xmlns="[invalid url, do not cite] class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 002 2h2a2 2 0 002-2"></path>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
                   </svg>
                   Paste
                 </button>
               </div>
               <button type="submit" class="h-14 px-8 bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2 transform hover:scale-105">
-                <svg xmlns="[invalid url, do not cite] class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
                 </svg> 
                 Download
@@ -211,22 +137,11 @@ function InputScreen({}: Props) {
                       <div class="text-gray-400 text-xs px-2 py-1 bg-white/10 rounded-full"></div>
                     </div>
                     <div class="text-gray-400 text-xs mb-2">{data()!.result.desc}</div>
-                    
-                    {/* Ad Banner Container */}
-                    <div class="flex justify-center my-4">
-                      <div id="ad-banner" style="min-height:280px;width:336px;margin:0 auto;">
-                        {!adLoaded() && (
-                          <div style="width:336px;height:280px;display:flex;align-items:center;justify-content:center;background:#f5f5f5;border-radius:8px;">
-                            <div class="animate-pulse text-gray-400">Loading advertisement...</div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
                   </div>
 
                   <div class="space-y-2">
                     <button class="download-button bg-gradient-to-r from-blue-600 to-blue-400 hover:from-blue-500 hover:to-blue-300">
-                      <svg xmlns="[invalid url, do not cite] class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
                       </svg> 
                       {data()!.result.videoSD && (
@@ -234,7 +149,7 @@ function InputScreen({}: Props) {
                       )}
                     </button>
                     <button class="download-button bg-gradient-to-r from-pink-600 to-pink-400 hover:from-pink-500 hover:to-pink-300">
-                      <svg xmlns="[invalid url, do not cite] class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
                       </svg> 
                       {data()!.result.videoHD && (
@@ -242,7 +157,7 @@ function InputScreen({}: Props) {
                       )}
                     </button>
                     <button class="download-button bg-gradient-to-r from-green-600 to-green-400 hover:from-green-500 hover:to-green-300">
-                      <svg xmlns="[invalid url, do not cite] class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
                       </svg> 
                       {data()!.result.videoWatermark && (
