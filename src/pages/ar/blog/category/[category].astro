@@ -1,16 +1,8 @@
 import { getCollection } from "astro:content";
-import Pagination from "@components/blog/pagination.astro";
 import Posts from "@components/blog/posts.astro";
 import Container from "@components/container.astro";
 import Sectionhead from "@components/sectionhead.astro";
 import Layout from "@layouts/Layout.astro";
-
-// Remove old astro-i18next imports
-// import i18next, { changeLanguage } from "i18next";
-// changeLanguage("ar");
-
-// Add new built-in i18n imports
-import { getLangFromUrl, useTranslations } from "../../../../i18n/utils";
 
 export async function getStaticPaths() {
 	const posts = await getCollection("blog", ({ data }) => {
@@ -19,8 +11,7 @@ export async function getStaticPaths() {
 	
 	// Filter for Arabic posts (posts starting with "ar/")
 	const localizedPosts = posts.filter((page) => {
-		const [lang, ...slug] = page.slug.split("/");
-		return lang === "ar";
+		return page.slug && page.slug.startsWith("ar/");
 	});
 	
 	const categories = new Set();
@@ -38,25 +29,19 @@ export async function getStaticPaths() {
 					post.data.category.toLowerCase() === category
 				),
 				category: category,
-				lang: "ar",
 			},
 		};
 	});
 }
 
-// Get the post directly from the prop on render
-const { posts, category, lang } = Astro.props;
-
-// Get current language and create translation function
-const currentLang = getLangFromUrl(Astro.url);
-const t = useTranslations(currentLang);
+const { posts, category } = Astro.props;
 ---
 
-<Layout title={`${t('mics.category_title1')} ${category} ${t('mics.category_title2')}`}>
+<Layout title={`فئة: ${category}`}>
 	<Container>
 		<Sectionhead>
 			<Fragment slot="title">#{category}</Fragment>
-			<Fragment slot="desc">{t('mics.category_desc')} {category}{t('mics.category_desc2')}</Fragment>
+			<Fragment slot="desc">تصفح جميع المنشورات في فئة {category}</Fragment>
 		</Sectionhead>
 		<Posts posts={posts} />
 	</Container>

@@ -5,37 +5,15 @@ import Container from "@components/container.astro";
 import Sectionhead from "@components/sectionhead.astro";
 import Layout from "@layouts/Layout.astro";
 
-// Remove old astro-i18next imports
-// import i18next, { changeLanguage } from "i18next";
-// changeLanguage("ar");
-
-// Add new built-in i18n imports
-import { getLangFromUrl, useTranslations } from "../../../i18n/utils";
-
 export async function getStaticPaths({ paginate }) {
 	var posts = await getCollection("blog", ({ data }) => {
 		return !data.draft;
 	});
 	
-	// Preprocess the posts to split the slugs and get the languages
-	var processedPosts = posts.map((post) => {
-		const [...slug] = post.slug.split("/");
-		let lang = "ar"; // Default to Arabic for this page
-		var firstSlug = post.slug.match(/^([^\/]*)\//);
-		if (firstSlug) {
-			lang = firstSlug[1];
-		}
-		return {
-			...post,
-			slug: slug.join("/"),
-			lang: lang,
-		};
+	// Filter for Arabic posts (posts starting with "ar/")
+	const localizedPosts = posts.filter((post) => {
+		return post.slug && post.slug.startsWith("ar/");
 	});
-	
-	// Filter posts for Arabic language ("ar")
-	const localizedPosts = processedPosts.filter(
-		(post) => post.lang === "ar",
-	);
 	
 	localizedPosts.sort(
 		(a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf(),
@@ -48,18 +26,13 @@ export async function getStaticPaths({ paginate }) {
 }
 
 const { page } = Astro.props;
-
-// Get current language and create translation function
-const safeUrl = Astro.url || new URL('/', Astro.site || 'http://localhost:4321');
-const lang = getLangFromUrl(safeUrl);
-const t = useTranslations(lang);
 ---
 
-<Layout title={t('mics.blog')}>
+<Layout title="مدونة TikTokio">
 	<Container>
 		<Sectionhead>
-			<Fragment slot="title">{t('mics.blog_h1')}</Fragment>
-			<Fragment slot="desc">{t('mics.blog_desc')}</Fragment>
+			<Fragment slot="title">مدونة TikTokio</Fragment>
+			<Fragment slot="desc">الدليل النهائي لتحميل فيديوهات TikTok</Fragment>
 		</Sectionhead>
 		<Posts posts={page.data} />
 		<Pagination class="mt-20" prevUrl={page.url.prev} nextUrl={page.url.next} />
