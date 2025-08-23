@@ -14,7 +14,7 @@ import tailwindcss from "@tailwindcss/vite";
 // https://astro.build/config
 export default defineConfig({
   output: "server",
-  site: "https://tiktokio.cam/",
+  site: "https://tiktokio.cam",
   adapter: vercel(),
 
   // Add Astro's built-in i18n configuration
@@ -33,7 +33,27 @@ export default defineConfig({
     },
   },
   integrations: [
-    sitemap(),
+    sitemap({
+  filter(page) {
+    const url = new URL(page, 'https://tiktokio.cam');
+    
+    // All non-English language codes
+    const nonEnglishLangs = ['ar', 'it', 'de', 'es', 'fr', 'hi', 'id', 'ko', 'ms', 'nl', 'pt', 'ru', 'tl', 'tr'];
+    
+    // Should exclude if:
+    const shouldExclude = 
+      // Non-English blog posts (but keeps /{lang}/blog/ index pages)
+      nonEnglishLangs.some(lang => 
+        url.pathname.startsWith(`/${lang}/blog/`) && 
+        url.pathname !== `/${lang}/blog/`
+      ) ||
+      // Pagination, tags, categories
+      /\/blog\/\d+\//.test(url.pathname) ||
+      url.pathname.includes('/tag/') || 
+      url.pathname.includes('/category/');
+    return !shouldExclude;
+  }
+})
     // Remove astroI18next() - not needed anymore
     alpinejs(),
     solidJs(), // Added SolidJS integration
@@ -44,22 +64,22 @@ export default defineConfig({
       includeAssets: ["favicon.svg"],
       registerType: "autoUpdate",
       manifest: {
-        name: "Astros - Starter Template for Astro with Tailwind CSS",
+        name: "Tiktokio - TikTok Downloader - Download TikTok Videos Without Watermark",
         short_name: "Astros",
         theme_color: "#ffffff",
         icons: [
           {
-            src: "pwa-192x192.png",
+            src: "pwa-192x192.webp",
             sizes: "192x192",
             type: "image/png",
           },
           {
-            src: "pwa-512x512.png",
+            src: "pwa-512x512.webp",
             sizes: "512x512",
             type: "image/png",
           },
           {
-            src: "pwa-512x512.png",
+            src: "pwa-512x512.webp",
             sizes: "512x512",
             type: "image/png",
             purpose: "any maskable",
