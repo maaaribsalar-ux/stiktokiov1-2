@@ -4,37 +4,44 @@ import Container from "@components/container.astro";
 import Layout from "@layouts/Layout.astro";
 import { getArticleReadingTime } from "@utils/blog";
 
-// Remove old astro-i18next imports
-// import { localizePath } from "astro-i18next";
-// import i18next, { changeLanguage } from "i18next";
-// changeLanguage("en");
-
-// Add new built-in i18n imports
 import { getLangFromUrl, useTranslations } from "../../i18n/utils";
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { Icon } from "astro-icon/components";
 
 // Generate a new path for every collection post
 export async function getStaticPaths() {
-	const blogEntries = await getCollection("blog");
-	// Filter for English blog posts (posts starting with "en/")
-	const localizedBlogEntries = blogEntries.filter((entry) =>
-		entry.slug && entry.slug.startsWith("en/")
-	);
-	
-	return localizedBlogEntries.map((post) => {
-		let slug = post.slug;
-		// Remove the "en/" prefix and any "blog/" if present
-		slug = slug.substring(3).replaceAll("blog/", "");
-		return {
-			params: { slug: slug },
-			props: { post: post },
-		};
-	});
+	try {
+		const blogEntries = await getCollection("blog");
+		
+		// Filter for English blog posts and process slugs
+		const localizedBlogEntries = blogEntries
+			.filter((entry) => {
+				return entry.slug && entry.slug.startsWith("en/");
+			})
+			.map((post) => {
+				// Remove the "en/" prefix from the slug
+				const cleanSlug = post.slug.substring(3);
+				
+				return {
+					params: { slug: cleanSlug },
+					props: { post: post },
+				};
+			});
+		
+		return localizedBlogEntries;
+	} catch (error) {
+		console.error("Error in getStaticPaths for [slug].astro:", error);
+		return [];
+	}
 }
 
 // Get the post directly from the prop on render
 const { post } = Astro.props;
+
+if (!post) {
+	throw new Error("Post not found");
+}
+
 const { data, render } = post;
 const { Content } = await render();
 const readTime = getArticleReadingTime(post.body);
@@ -54,7 +61,7 @@ function localizePath(path: string) {
 <Layout title={post.data.title} lang={lang}>
 	<Container>
 		<div class="mx-auto prose prose-lg dark:prose-invert mt-14">
-			<a
+			
 				href={localizePath(`/blog/category/${post.data.category?.toLowerCase()}`)}
 				class="text-blue-400 dark:text-stone-400 uppercase tracking-wider text-sm font-medium no-underline">
 				{post.data.category}
