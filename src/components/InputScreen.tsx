@@ -304,12 +304,12 @@ function InputScreen({}: Props) {
                 }
               }}
             >
-              <div class="relative flex-grow">
+              <div class="relative flex-grow bg-white rounded">
                 <input type="text"
                   value={url()}
                   onInput={(e) => setUrl(e.currentTarget.value)}
                   placeholder="Paste TikTok video link here"
-                  class="w-full h-14 border-gray-700 text-black rounded-xl px-5 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 flex-1 px-4 py-3 rounded-md focus:ring-2 focus:ring-blue-600"
+                  class="w-full h-14 border-gray-700 text-black rounded px-5 focus:outline-none focus:ring-2 focus:border-transparent transition-all duration-300 flex-1 px-4 py-3 rounded focus:ring-2 focus:ring-blue-600"
                 />
                 <button type="button" 
                   onClick={handlePaste} 
