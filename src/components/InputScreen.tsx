@@ -1,6 +1,5 @@
 import { toast, Toaster } from "solid-toast";
-import { createSignal, onCleanup } from "solid-js";
-import "../public/style.css"; 
+import { createSignal, onCleanup } from "solid-js"; 
 
 // Updated interface to match the actual API response
 interface TikTokData {
@@ -379,27 +378,27 @@ function InputScreen({}: Props) {
                   value={url()}
                   onInput={(e) => setUrl(e.currentTarget.value)}
                 />
-                <button
-                  class="px-8 py-[14px] bg-[#2172F6] text-xl text-white font-semibold rounded-lg shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 outline-none mt-10 sm:mt-0 w-full sm:w-auto send-btn cursor-pointer sm:absolute right-1 top-[50%] translate-y-[-50%]"
-                  type="submit"
-                  id="down-btn"
-                >
-                  Download
-                  <div>
-                    <button
-                      class="px-[2px] py-[12px] right-2 sm:right-[180px] absolute rounded-lg top-[20%] sm:top-[50%] translate-y-[-50%]"
-                      style="background: linear-gradient(54.09deg, #0348dd 2.03%, #8142f5 48.63%, #ee4dd4 96.22%), linear-gradient(0deg, rgba(201, 46, 255, .15), rgba(201, 46, 255, .15))"
-                      type="button"
-                      onClick={handlePaste}
-                    >
-                      <img src="/images/paste.webp" class="aspect-auto absolute top-[50%] translate-y-[-50%] left-[17px]" alt=""/>
-                      <span
-                        class="bg-[#F2D1FD] px-8 py-[12px] text-xl rounded-lg"
-                        id="paste-btn"
-                      >Paste</span>
-                    </button>
-                  </div>
-                </button>
+                <div class="relative w-full sm:w-auto">
+                  <button
+                    class="px-8 py-[14px] bg-[#2172F6] text-xl text-white font-semibold rounded-lg shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 outline-none mt-10 sm:mt-0 w-full sm:w-auto send-btn cursor-pointer sm:absolute right-1 top-[50%] translate-y-[-50%]"
+                    type="submit"
+                    id="down-btn"
+                  >
+                    Download
+                  </button>
+                  <button
+                    class="px-[2px] py-[12px] right-2 sm:right-[180px] absolute rounded-lg top-[20%] sm:top-[50%] translate-y-[-50%]"
+                    style="background: linear-gradient(54.09deg, #0348dd 2.03%, #8142f5 48.63%, #ee4dd4 96.22%), linear-gradient(0deg, rgba(201, 46, 255, .15), rgba(201, 46, 255, .15))"
+                    type="button"
+                    onClick={handlePaste}
+                  >
+                    <img src="/images/paste.webp" class="aspect-auto absolute top-[50%] translate-y-[-50%] left-[17px]" alt=""/>
+                    <span
+                      class="bg-[#F2D1FD] px-8 py-[12px] text-xl rounded-lg"
+                      id="paste-btn"
+                    >Paste</span>
+                  </button>
+                </div>
               </div>
             </form>
           </div>
@@ -575,6 +574,60 @@ function InputScreen({}: Props) {
         }
         .flex {
           align-items: flex-start;
+        }
+        .pageTunerWrapper {
+          display: flex;
+          justify-content: center;
+          margin: 2rem 0;
+        }
+        .pageTunerWrapper__items {
+          display: flex;
+          gap: 1rem;
+          background: rgba(255, 255, 255, 0.1);
+          padding: 0.5rem;
+          border-radius: 12px;
+          backdrop-filter: blur(10px);
+        }
+        .pageTunerWrapper__item {
+          padding: 0.75rem 1rem;
+          border-radius: 8px;
+          transition: all 0.3s ease;
+        }
+        .pageTunerWrapper__item:hover {
+          background: rgba(255, 255, 255, 0.2);
+        }
+        .pageTunerWrapper__item a {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          color: white;
+          text-decoration: none;
+          font-weight: 500;
+        }
+        .sub-form {
+          position: relative;
+        }
+        .down-url {
+          padding-right: 200px;
+        }
+        .loader {
+          display: flex;
+          padding: 2rem;
+        }
+        .loader img {
+          width: 50px;
+          height: 50px;
+          animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        .main-div.hidden {
+          display: none;
+        }
+        .another {
+          position: relative;
         }
       `}</style>
     </div>
