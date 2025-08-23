@@ -1,9 +1,15 @@
+---
 import { getCollection } from "astro:content";
 import Container from "@components/container.astro";
 import Layout from "@layouts/Layout.astro";
 import { getArticleReadingTime } from "@utils/blog";
+
+// Add new built-in i18n imports
+import { getLangFromUrl, useTranslations } from "../../../i18n/utils";
+import { getRelativeLocaleUrl } from "astro:i18n";
 import { Icon } from "astro-icon/components";
 
+// Generate a new path for every collection post
 export async function getStaticPaths() {
 	const blogEntries = await getCollection("blog");
 	// Filter for Arabic blog posts (posts starting with "ar/")
@@ -13,7 +19,7 @@ export async function getStaticPaths() {
 	
 	return localizedBlogEntries.map((post) => {
 		let slug = post.slug;
-		// Remove the "ar/" prefix
+		// Remove the "ar/" prefix and any "blog/" if present
 		slug = slug.substring(3).replaceAll("blog/", "");
 		return {
 			params: { slug: slug },
@@ -22,17 +28,29 @@ export async function getStaticPaths() {
 	});
 }
 
+// Get the post directly from the prop on render
 const { post } = Astro.props;
 const { data, render } = post;
 const { Content } = await render();
 const readTime = getArticleReadingTime(post.body);
+
+// Get current language and create translation function
+const safeUrl = Astro.url || new URL('/', Astro.site || 'http://localhost:4321');
+const lang = getLangFromUrl(safeUrl);
+const t = useTranslations(lang);
+
+// Helper function to create localized paths
+function localizePath(path: string) {
+	if (!path || (path && path.startsWith('http')) || path === '#') return path;
+	return getRelativeLocaleUrl(lang, path);
+}
 ---
 
-<Layout title={post.data.title}>
+<Layout title={post.data.title} lang={lang} dir={lang === 'ar' ? 'rtl' : 'ltr'}>
 	<Container>
 		<div class="mx-auto prose prose-lg dark:prose-invert mt-14">
 			<a
-				href="/ar/blog/category/"
+				href={localizePath(`/blog/category/${post.data.category?.toLowerCase()}`)}
 				class="text-blue-400 dark:text-stone-400 uppercase tracking-wider text-sm font-medium no-underline">
 				{post.data.category}
 			</a>
@@ -42,8 +60,8 @@ const readTime = getArticleReadingTime(post.body);
 			<div class="flex gap-2 items-center">
 				<div class="w-full md:w-auto flex flex-wrap gap-3">
 					{
-						post.data.tags?.map((tag) => (
-							<a href={`/ar/blog/tag/${tag?.toLowerCase()}`} class="text-sm text-gray-500 dark:text-stone-300">
+						post.data.tags.map((tag) => (
+							<a href={localizePath(`/blog/tag/${tag?.toLowerCase()}`)} class="text-sm text-gray-500 dark:text-stone-300">
 								#{tag}
 							</a>
 						))
@@ -56,7 +74,7 @@ const readTime = getArticleReadingTime(post.body);
 				</span>
 				<span class="text-gray-400 dark:text-stone-400">•</span>
 				<span class="text-gray-400 dark:text-stone-400">
-					{readTime} دقيقة
+					{readTime} min
 				</span>
 				<span class="text-gray-400 dark:text-stone-400">•</span>
 				<time class="text-gray-400 dark:text-stone-400" datetime={post.data.publishDate.toISOString()}>
@@ -68,14 +86,38 @@ const readTime = getArticleReadingTime(post.body);
 		<div class="mx-auto prose prose-lg dark:prose-invert mt-6 dark:text-gray-200">
 			<Content />
 		</div>
-		
 		<div class="mx-auto mt-20">
-			<a href="/ar/blog">
+			<a href={localizePath("/blog")}>
 				<div class="flex flex-row align-middle justify-center dark:text-stone-200">
 					<Icon name="tabler:chevron-left" class="w-6 h-6" />
-					<p class="ml-2">العودة للمدونة</p>
+					<p class="ml-2">Back to blog</p>
 				</div>
 			</a>
+		</div>
+		<div
+			class="mx-auto prose prose-lg dark:prose-invert mt-20"
+			x-data="{
+				initGiscus: function() {
+					let script = document.createElement('script');
+					script.src = 'https://giscus.app/client.js';
+					script.dataset.repo = 'zankhq/astros';
+					script.dataset.repoId = 'R_kgDOGa6DOg';
+					script.dataset.category = 'Blog';
+					script.dataset.categoryId = 'DIC_kwDOGa6DOs4CXazF';
+					script.dataset.mapping = 'pathname';
+					script.dataset.strict = '0';
+					script.dataset.reactionsEnabled = '1';
+					script.dataset.emitMetadata = '0';
+					script.dataset.inputPosition = 'top';
+					script.dataset.theme = localStorage.theme == 'dark' ? 'dark' : localStorage.theme == 'light' ? 'light' : 'preferred_color_scheme';
+					script.dataset.lang = 'ar';
+					script.dataset.loading = 'lazy';
+					script.crossOrigin = 'anonymous';
+					script.async = true;
+					this.$el.appendChild(script);
+				}
+			}"
+			x-init="initGiscus()">
 		</div>
 	</Container>
 </Layout>

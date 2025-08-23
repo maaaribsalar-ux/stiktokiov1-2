@@ -1,8 +1,13 @@
+---
 import { getCollection } from "astro:content";
+import Pagination from "@components/blog/pagination.astro";
 import Posts from "@components/blog/posts.astro";
 import Container from "@components/container.astro";
 import Sectionhead from "@components/sectionhead.astro";
 import Layout from "@layouts/Layout.astro";
+
+// Add new built-in i18n imports
+import { getLangFromUrl, useTranslations } from "../../../../i18n/utils";
 
 export async function getStaticPaths() {
 	const posts = await getCollection("blog", ({ data }) => {
@@ -11,7 +16,8 @@ export async function getStaticPaths() {
 	
 	// Filter for Arabic posts (posts starting with "ar/")
 	const localizedPosts = posts.filter((page) => {
-		return page.slug && page.slug.startsWith("ar/");
+		const [lang, ...slug] = page.slug.split("/");
+		return lang === "ar";
 	});
 	
 	const tags = new Set();
@@ -30,19 +36,25 @@ export async function getStaticPaths() {
 						post.data.tags.find((elem) => elem.toLowerCase() === tag),
 				),
 				tag: tag,
+				lang: "ar",
 			},
 		};
 	});
 }
 
-const { posts, tag } = Astro.props;
+// Get the post directly from the prop on render
+const { posts, tag, lang } = Astro.props;
+
+// Get current language and create translation function
+const currentLang = getLangFromUrl(Astro.url);
+const t = useTranslations(currentLang);
 ---
 
-<Layout title={`الوسم: ${tag}`}>
+<Layout title="Blog" dir={lang === 'ar' ? 'rtl' : 'ltr'}>
 	<Container>
 		<Sectionhead>
 			<Fragment slot="title">#{tag}</Fragment>
-			<Fragment slot="desc">تصفح جميع المنشورات المتعلقة بـ {tag}</Fragment>
+			<Fragment slot="desc">We write about building startups and thoughts going on our mind.</Fragment>
 		</Sectionhead>
 		<Posts posts={posts} />
 	</Container>

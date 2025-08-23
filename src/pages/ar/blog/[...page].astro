@@ -1,3 +1,4 @@
+---
 import { getCollection } from "astro:content";
 import Pagination from "@components/blog/pagination.astro";
 import Posts from "@components/blog/posts.astro";
@@ -5,15 +6,33 @@ import Container from "@components/container.astro";
 import Sectionhead from "@components/sectionhead.astro";
 import Layout from "@layouts/Layout.astro";
 
+// Add new built-in i18n imports
+import { getLangFromUrl, useTranslations } from "../../../i18n/utils";
+
 export async function getStaticPaths({ paginate }) {
 	var posts = await getCollection("blog", ({ data }) => {
 		return !data.draft;
 	});
 	
-	// Filter for Arabic posts (posts starting with "ar/")
-	const localizedPosts = posts.filter((post) => {
-		return post.slug && post.slug.startsWith("ar/");
+	// Preprocess the posts to split the slugs and get the languages
+	var processedPosts = posts.map((post) => {
+		const [...slug] = post.slug.split("/");
+		let lang = "ar"; // Default to Arabic for this page
+		var firstSlug = post.slug.match(/^([^\/]*)\//);
+		if (firstSlug) {
+			lang = firstSlug[1];
+		}
+		return {
+			...post,
+			slug: slug.join("/"),
+			lang: lang,
+		};
 	});
+	
+	// Filter posts for Arabic language ("ar")
+	const localizedPosts = processedPosts.filter(
+		(post) => post.lang === "ar",
+	);
 	
 	localizedPosts.sort(
 		(a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf(),
@@ -26,13 +45,18 @@ export async function getStaticPaths({ paginate }) {
 }
 
 const { page } = Astro.props;
+
+// Get current language and create translation function
+const safeUrl = Astro.url || new URL('/', Astro.site || 'http://localhost:4321');
+const lang = getLangFromUrl(safeUrl);
+const t = useTranslations(lang);
 ---
 
-<Layout title="مدونة TikTokio">
+<Layout title="Blog" dir={lang === 'ar' ? 'rtl' : 'ltr'}>
 	<Container>
 		<Sectionhead>
-			<Fragment slot="title">مدونة TikTokio</Fragment>
-			<Fragment slot="desc">الدليل النهائي لتحميل فيديوهات TikTok</Fragment>
+			<Fragment slot="title">Our Blog</Fragment>
+			<Fragment slot="desc">Discover Industry Insights, Company News, and Expert Opinions.</Fragment>
 		</Sectionhead>
 		<Posts posts={page.data} />
 		<Pagination class="mt-20" prevUrl={page.url.prev} nextUrl={page.url.next} />
