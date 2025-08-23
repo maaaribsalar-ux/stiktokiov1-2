@@ -5,9 +5,6 @@ import Navbar from "@components/navbar/navbar.astro";
 import "@fontsource-variable/inter";
 import "./index.css";
 
-// Remove old astro-i18next imports
-// import { HeadHrefLangs } from "astro-i18next/components";
-// import i18next from "i18next";
 
 // Add new built-in i18n imports
 import { getLangFromUrl, useTranslations } from "../i18n/utils";
@@ -39,7 +36,7 @@ const resolvedImageWithDomain = new URL(
 const { title } = Astro.props;
 const makeTitle = title
 	? `${title} | TikTokio`
-	: "TikTokio: TikTok Downloader - Download TikTok Videos no Watermark";
+	: "Tiktokio - TikTok Downloader - TikTok Video Downloader No Watermark";
 
 // Simplified and safe hreflang generation
 function generateHrefLangs() {
@@ -88,13 +85,13 @@ const hrefLangs = generateHrefLangs();
 		<!-- Global CSS -->
 		<SEO
 			title={makeTitle}
-			description="TikTokio - Tiktok downloader to online download tiktok videos in mp4 without watermark easily, Tiktok video downloader is Fast, easy and works on any device"
+			description="Download TikTok videos online free with fast and secure Tiktokio - TikTok downloader. Save videos without watermark in mp4. No signup, use it free anywhere."
 			canonical={canonicalURL}
 			openGraph={{
 				basic: {
 					url: canonicalURL,
 					type: "website",
-					title: `TikTokio: TikTok Downloader - Download TikTok Videos no Watermark`,
+					title: `Tiktokio - TikTok Downloader - TikTok Video Downloader No Watermark`,
 					image: resolvedImageWithDomain,
 				},
 				image: {
@@ -106,7 +103,7 @@ const hrefLangs = generateHrefLangs();
 		<!-- Twitter Card -->
 		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="twitter:title" content={makeTitle} />
-		<meta name="twitter:description" content="TikTokio - Tiktok downloader to online download tiktok videos in mp4 without watermark easily, Tiktok video downloader is Fast, easy and works on any device" />
+		<meta name="twitter:description" content="Download TikTok videos online free with fast and secure Tiktokio - TikTok downloader. Save videos without watermark in mp4. No signup, use it free anywhere." />
 		<meta name="twitter:image" content={resolvedImageWithDomain} />
 		<meta name="twitter:site" content="@YourTwitterHandle" />
 		<meta name="twitter:creator" content="@tiktokio_cam" />
