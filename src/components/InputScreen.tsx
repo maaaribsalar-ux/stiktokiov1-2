@@ -28,6 +28,7 @@ function InputScreen({}: Props) {
   const [loading, setLoading] = createSignal(false);
   const [error, setError] = createSignal("");
   const [adLoaded, setAdLoaded] = createSignal(false);
+  const [downloading, setDownloading] = createSignal("");
 
   const fetchData = async () => {
     setLoading(true);
@@ -67,16 +68,150 @@ function InputScreen({}: Props) {
     }
   };
 
-  // Fixed download function to handle direct video URLs
-  const downloadVideo = (videoUrl: string, filename: string, quality: string) => {
-    const link = document.createElement('a');
-    link.href = videoUrl;
-    link.download = `${filename}_${quality}.mp4`;
-    link.target = '_blank';
-    link.rel = 'noopener noreferrer';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  // Enhanced download function with external service and fallbacks
+  const downloadVideo = async (videoUrl: string, filename: string, quality: string) => {
+    if (!videoUrl) {
+      toast.error("Video URL not available");
+      return;
+    }
+
+    setDownloading(quality);
+    
+    try {
+      // Method 1: Try external download service first
+      const externalServiceUrl = `https://dl.tiktokiocdn.workers.dev/api/download?url=${encodeURIComponent(videoUrl)}&type=.mp4&title=${encodeURIComponent(filename)}_${quality}`;
+      
+      // Test if the external service is working
+      const testResponse = await fetch(externalServiceUrl, {
+        method: 'HEAD',
+        timeout: 5000
+      }).catch(() => null);
+
+      if (testResponse && testResponse.ok) {
+        // External service is working, use it
+        const link = document.createElement('a');
+        link.href = externalServiceUrl;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        toast.success(`${quality} video download started!`, {
+          duration: 2000,
+          position: "bottom-center"
+        });
+      } else {
+        throw new Error("External service unavailable");
+      }
+    } catch (error) {
+      console.log("External service failed, trying direct download...");
+      
+      try {
+        // Method 2: Direct download fallback
+        const response = await fetch(videoUrl, {
+          mode: 'cors',
+          headers: {
+            'Accept': 'video/mp4,video/*,*/*'
+          }
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const blob = await response.blob();
+        const downloadUrl = window.URL.createObjectURL(blob);
+        
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.download = `${filename}_${quality}.mp4`;
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        // Clean up the blob URL
+        window.URL.revokeObjectURL(downloadUrl);
+        
+        toast.success(`${quality} video downloaded successfully!`, {
+          duration: 2000,
+          position: "bottom-center"
+        });
+      } catch (directError) {
+        console.error("Direct download failed:", directError);
+        
+        // Method 3: Open in new tab as last resort
+        const link = document.createElement('a');
+        link.href = videoUrl;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        toast.error("Download service unavailable. Video opened in new tab - you can save it manually.", {
+          duration: 4000,
+          position: "bottom-center"
+        });
+      }
+    } finally {
+      setDownloading("");
+    }
+  };
+
+  // Enhanced download function for audio
+  const downloadAudio = async (audioUrl: string, filename: string) => {
+    if (!audioUrl) {
+      toast.error("Audio URL not available");
+      return;
+    }
+
+    setDownloading("Audio");
+    
+    try {
+      // Try external service for audio
+      const externalServiceUrl = `https://dl.tiktokiocdn.workers.dev/api/download?url=${encodeURIComponent(audioUrl)}&type=.mp3&title=${encodeURIComponent(filename)}_audio`;
+      
+      const testResponse = await fetch(externalServiceUrl, {
+        method: 'HEAD',
+        timeout: 5000
+      }).catch(() => null);
+
+      if (testResponse && testResponse.ok) {
+        const link = document.createElement('a');
+        link.href = externalServiceUrl;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        toast.success("Audio download started!", {
+          duration: 2000,
+          position: "bottom-center"
+        });
+      } else {
+        // Fallback for audio
+        const link = document.createElement('a');
+        link.href = audioUrl;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        toast.error("Audio download service unavailable. Audio opened in new tab.", {
+          duration: 3000,
+          position: "bottom-center"
+        });
+      }
+    } catch (error) {
+      console.error("Audio download failed:", error);
+      toast.error("Failed to download audio");
+    } finally {
+      setDownloading("");
+    }
   };
 
   const loadAd = () => {
@@ -260,52 +395,75 @@ function InputScreen({}: Props) {
                   </div>
 
                   <div class="space-y-2">
-                    {/* Fixed download buttons with direct video URLs */}
+                    {/* Enhanced download buttons with loading states and external service */}
                     {data()!.result!.videoHD && (
                       <button 
-                        class="w-full download-button bg-gradient-to-r from-pink-600 to-pink-400 hover:from-pink-500 hover:to-pink-300 text-white px-4 py-2 rounded-lg transition-all duration-300 flex items-center justify-center gap-2"
+                        class={`w-full download-button bg-gradient-to-r from-pink-600 to-pink-400 hover:from-pink-500 hover:to-pink-300 text-white px-4 py-2 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 ${downloading() === 'HD' ? 'opacity-75 cursor-not-allowed' : ''}`}
                         onClick={() => downloadVideo(
                           data()!.result!.videoHD!, 
                           data()!.result!.author?.nickname || 'tiktok_video', 
                           'HD'
                         )}
+                        disabled={downloading() === 'HD'}
                       >
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
-                        </svg> 
-                        Download HD (No Watermark)
+                        {downloading() === 'HD' ? (
+                          <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none" />
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+                          </svg>
+                        ) : (
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                          </svg>
+                        )}
+                        {downloading() === 'HD' ? 'Downloading...' : 'Download HD (No Watermark)'}
                       </button>
                     )}
                     
                     {data()!.result!.videoWatermark && (
                       <button 
-                        class="w-full download-button bg-gradient-to-r from-green-600 to-green-400 hover:from-green-500 hover:to-green-300 text-white px-4 py-2 rounded-lg transition-all duration-300 flex items-center justify-center gap-2"
+                        class={`w-full download-button bg-gradient-to-r from-green-600 to-green-400 hover:from-green-500 hover:to-green-300 text-white px-4 py-2 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 ${downloading() === 'Watermark' ? 'opacity-75 cursor-not-allowed' : ''}`}
                         onClick={() => downloadVideo(
                           data()!.result!.videoWatermark!, 
                           data()!.result!.author?.nickname || 'tiktok_video', 
                           'Watermark'
                         )}
+                        disabled={downloading() === 'Watermark'}
                       >
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
-                        </svg> 
-                        Download (With Watermark)
+                        {downloading() === 'Watermark' ? (
+                          <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none" />
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+                          </svg>
+                        ) : (
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                          </svg>
+                        )}
+                        {downloading() === 'Watermark' ? 'Downloading...' : 'Download (With Watermark)'}
                       </button>
                     )}
 
                     {data()!.result!.music && (
                       <button 
-                        class="w-full download-button bg-gradient-to-r from-blue-600 to-blue-400 hover:from-blue-500 hover:to-blue-300 text-white px-4 py-2 rounded-lg transition-all duration-300 flex items-center justify-center gap-2"
-                        onClick={() => downloadVideo(
+                        class={`w-full download-button bg-gradient-to-r from-blue-600 to-blue-400 hover:from-blue-500 hover:to-blue-300 text-white px-4 py-2 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 ${downloading() === 'Audio' ? 'opacity-75 cursor-not-allowed' : ''}`}
+                        onClick={() => downloadAudio(
                           data()!.result!.music!, 
-                          data()!.result!.author?.nickname || 'tiktok_audio', 
-                          'Audio'
+                          data()!.result!.author?.nickname || 'tiktok_audio'
                         )}
+                        disabled={downloading() === 'Audio'}
                       >
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
-                        </svg> 
-                        Download Audio
+                        {downloading() === 'Audio' ? (
+                          <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none" />
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+                          </svg>
+                        ) : (
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
+                          </svg>
+                        )}
+                        {downloading() === 'Audio' ? 'Downloading...' : 'Download Audio'}
                       </button>
                     )}
 
