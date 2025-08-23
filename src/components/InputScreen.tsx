@@ -291,142 +291,76 @@ function InputScreen({}: Props) {
     <div class="max-w-6xl mx-auto mt-8 px-4">
       <Toaster />
 
-
-
-<div class="relative isolate px-6 pt-10 lg:px-8 pb-28 bg-orange-500">
-  <div
-    class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
-    aria-hidden="true"
-  >
-  </div>
-  <div class="mx-auto max-w-screen-xl another">
-    <div class="text-center">
-      <h1 class="text-4xl font-bold tracking-tight text-white">{heading}</h1>
-      <p class="my-2 text-lg leading-8 text-gray-200">{subheading}</p>
-    </div>
-
-    <div class="pageTunerWrapper">
-      <div class="pageTunerWrapper__items">
-        <div class="pageTunerWrapper__item">
-          <a href="/" data-gtag-click="top_panel_video_click"
-            ><img
-              src="/images/tiktok-video.svg"
-              alt="Video"
-              width="24"
-              height="24"
-              loading="lazy"
-            /><span class="md:block hidden">Video</span></a
-          >
-        </div>
-        <div class="pageTunerWrapper__item">
-          <a
-            href="/tiktok-slideshow-downloader"
-            data-gtag-click="top_panel_photo_click"
-            ><img
-              src="/images/tiktok-photo.svg"
-              alt="Photo"
-              width="24"
-              height="24"
-              loading="lazy"
-            /><span class="md:block hidden">Photo</span></a
-          >
-        </div>
-        <div class="pageTunerWrapper__item">
-          <a
-            href="/tiktok-story-downloader"
-            data-gtag-click="top_panel_story_click"
-            ><img
-              src="/images/story.svg"
-              alt="Story"
-              width="24"
-              height="24"
-              loading="lazy"
-            /><span class="md:block hidden">Story</span></a
-          >
-        </div>
-        <div class="pageTunerWrapper__item">
-          <a
-            href="/tiktok-sound-downloader"
-            data-gtag-click="top_panel_sound_click"
-            ><img
-              src="/images/tiktok-audio.svg"
-              alt="Sound"
-              width="24"
-              height="24"
-              loading="lazy"
-            /><span class="md:block hidden">Mp3</span></a
-          >
-        </div>
-      </div>
-    </div>
-
-    <div class="relative max-w-4xl mx-auto mt-8">
-      <form class="block items-center sm:space-x-4 sm:flex sub-form">
-        <div class="relative flex-1">
-          <input
-            type="text"
-            placeholder="Paste tiktok video link here"
-            class="w-full pr-14 pl-4 outline-none rounded-md py-5 text-black placeholder-gray-500 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent down-url bg-[#F9E2D2]"
-            style="box-shadow: 0 0 2px rgb(255, 255, 255) !important;"
-            id="tiktok-url"
-          />
-          <button
-            class="px-8 py-[14px] bg-[#2172F6] text-xl text-white font-semibold rounded-lg shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 outline-none mt-10 sm:mt-0 w-full sm:w-auto send-btn cursor-pointer sm:absolute right-1 top-[50%] translate-y-[-50%]"
-            type="submit"
-            id="down-btn"
-          >
-            Download
-            <div>
-              <button
-                class="px-[2px] py-[12px] right-2 sm:right-[180px] absolute rounded-lg top-[20%] sm:top-[50%] translate-y-[-50%]"
-                style="background: linear-gradient(54.09deg, #0348dd 2.03%, #8142f5 48.63%, #ee4dd4 96.22%), linear-gradient(0deg, rgba(201, 46, 255, .15), rgba(201, 46, 255, .15))"
-                type="button"
-              >
-                <img src="/images/paste.webp" class="aspect-auto absolute top-[50%] translate-y-[-50%] left-[17px]" alt=""/>
-                <span
-                  class="bg-[#F2D1FD] px-8 py-[12px] text-xl rounded-lg"
-                  id="paste-btn"
-                >Paste</span>
-              </button>
-            </div>
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <div class="loader items-center justify-center hidden bg-orange-500">
-    <img src="/src/icons/loader.webp" alt="loader" />
-  </div>
-
-  <div class="bg-orange-500 py-16 px-4 sm:px-6 lg:px-8 main-div hidden">
-    <div class="max-w-7xl mx-auto">
-      <h2></h2>
-      <h2 class="text-2xl text-center mb-4 shadow-text msg break-all"></h2>
-      <div class="flex flex-wrap justify-center gap-8">
+      {/* Header Section */}
+      <div class="relative isolate px-6 pt-10 lg:px-8 pb-28 bg-orange-500">
         <div
-          class="gap-8 down-div grid lg:grid-cols-1 xl:grid-cols-2 grid-cols-1"
+          class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
+          aria-hidden="true"
         >
         </div>
-      </div>
-    </div>
-  </div>
+        <div class="mx-auto max-w-screen-xl another">
+          <div class="text-center">
+            <h1 class="text-4xl font-bold tracking-tight text-white shadow-text">TikTok Video Downloader</h1>
+            <p class="my-2 text-lg leading-8 text-gray-200 shadow-text">Download TikTok videos without watermark</p>
+          </div>
 
-  <style>
-    .shadow-text {
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    }
-    .flex {
-      align-items: flex-start;
-    }
-  </style>
-</div>
-      
-      {/* Input Form Section */}
-      <div class="max-w-6xl mx-auto">
-        <div class="download-box rounded-2xl">
-          <div class="bg-cyan-800/80 rounded-xl backdrop-blur-md p-4">
-            <form class="flex flex-col md:flex-row items-stretch md:items-center gap-2"
+          <div class="pageTunerWrapper">
+            <div class="pageTunerWrapper__items">
+              <div class="pageTunerWrapper__item">
+                <a href="/" data-gtag-click="top_panel_video_click"
+                  ><img
+                    src="/images/tiktok-video.svg"
+                    alt="Video"
+                    width="24"
+                    height="24"
+                    loading="lazy"
+                  /><span class="md:block hidden">Video</span></a
+                >
+              </div>
+              <div class="pageTunerWrapper__item">
+                <a
+                  href="/tiktok-slideshow-downloader"
+                  data-gtag-click="top_panel_photo_click"
+                  ><img
+                    src="/images/tiktok-photo.svg"
+                    alt="Photo"
+                    width="24"
+                    height="24"
+                    loading="lazy"
+                  /><span class="md:block hidden">Photo</span></a
+                >
+              </div>
+              <div class="pageTunerWrapper__item">
+                <a
+                  href="/tiktok-story-downloader"
+                  data-gtag-click="top_panel_story_click"
+                  ><img
+                    src="/images/story.svg"
+                    alt="Story"
+                    width="24"
+                    height="24"
+                    loading="lazy"
+                  /><span class="md:block hidden">Story</span></a
+                >
+              </div>
+              <div class="pageTunerWrapper__item">
+                <a
+                  href="/tiktok-sound-downloader"
+                  data-gtag-click="top_panel_sound_click"
+                  ><img
+                    src="/images/tiktok-audio.svg"
+                    alt="Sound"
+                    width="24"
+                    height="24"
+                    loading="lazy"
+                  /><span class="md:block hidden">Mp3</span></a
+                >
+              </div>
+            </div>
+          </div>
+
+          <div class="relative max-w-4xl mx-auto mt-8">
+            <form class="block items-center sm:space-x-4 sm:flex sub-form"
               onSubmit={(e) => {
                 e.preventDefault();
                 if (!url()) {
@@ -434,49 +368,69 @@ function InputScreen({}: Props) {
                 } else {
                   fetchData();
                 }
-              }}
-            >
-              <div class="relative flex-grow bg-white rounded">
-                <input type="text"
+              }}>
+              <div class="relative flex-1">
+                <input
+                  type="text"
+                  placeholder="Paste tiktok video link here"
+                  class="w-full pr-14 pl-4 outline-none rounded-md py-5 text-black placeholder-gray-500 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent down-url bg-[#F9E2D2]"
+                  style="box-shadow: 0 0 2px rgb(255, 255, 255) !important;"
+                  id="tiktok-url"
                   value={url()}
                   onInput={(e) => setUrl(e.currentTarget.value)}
-                  placeholder="Paste TikTok video link here"
-                  class="w-full h-14 border-gray-700 text-black rounded px-5 focus:outline-none focus:ring-2 focus:border-transparent transition-all duration-300 flex-1 px-4 py-3 rounded focus:ring-2 focus:ring-blue-600"
                 />
-                <button type="button" 
-                  onClick={handlePaste} 
-                  class="absolute right-3 top-1/2 transform -translate-y-1/2 bg-gray-700/80 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-all duration-300 flex items-center gap-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012 2h2a2 2 0 012-2"></path>
-                  </svg>
-                  Paste
+                <button
+                  class="px-8 py-[14px] bg-[#2172F6] text-xl text-white font-semibold rounded-lg shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 outline-none mt-10 sm:mt-0 w-full sm:w-auto send-btn cursor-pointer sm:absolute right-1 top-[50%] translate-y-[-50%]"
+                  type="submit"
+                  id="down-btn"
+                >
+                  Download
+                  <div>
+                    <button
+                      class="px-[2px] py-[12px] right-2 sm:right-[180px] absolute rounded-lg top-[20%] sm:top-[50%] translate-y-[-50%]"
+                      style="background: linear-gradient(54.09deg, #0348dd 2.03%, #8142f5 48.63%, #ee4dd4 96.22%), linear-gradient(0deg, rgba(201, 46, 255, .15), rgba(201, 46, 255, .15))"
+                      type="button"
+                      onClick={handlePaste}
+                    >
+                      <img src="/images/paste.webp" class="aspect-auto absolute top-[50%] translate-y-[-50%] left-[17px]" alt=""/>
+                      <span
+                        class="bg-[#F2D1FD] px-8 py-[12px] text-xl rounded-lg"
+                        id="paste-btn"
+                      >Paste</span>
+                    </button>
+                  </div>
                 </button>
               </div>
-              <button type="submit" class="h-14 px-8 bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2 transform hover:scale-105">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
-                </svg> 
-                Download
-              </button>
             </form>
+          </div>
+        </div>
+
+        {loading() && (
+          <div class="loader items-center justify-center bg-orange-500">
+            <img src="/src/icons/loader.webp" alt="loader" />
+          </div>
+        )}
+
+        <div class={`bg-orange-500 py-16 px-4 sm:px-6 lg:px-8 main-div ${data() ? '' : 'hidden'}`}>
+          <div class="max-w-7xl mx-auto">
+            <h2 class="text-2xl text-center mb-4 shadow-text msg break-all">
+              {data()?.result?.desc || "Video downloaded successfully"}
+            </h2>
+            <div class="flex flex-wrap justify-center gap-8">
+              <div class="gap-8 down-div grid lg:grid-cols-1 xl:grid-cols-2 grid-cols-1">
+                {/* Content will be populated by results */}
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      {loading() && (
-        <div class="flex justify-center mt-4">
-          <svg class="animate-spin h-10 w-10 text-blue-600" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none" />
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
-          </svg>
-        </div>
-      )}
-
+      {/* Results Section */}
       {data() && data()?.result && (
         <div class="mt-6">
           <div class="mt-4 max-w-6xl mx-auto">
             <div class="bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-lg overflow-hidden backdrop-blur-sm border border-white/10 p-4">
-              <div class="flex flex-col md:flex-row gap-4">
+              <div class="flex flex-col md:flex-row gap-4" style="align-items: flex-start;">
                 <div class="md:w-1/3 flex-shrink-0">
                   <div class="relative rounded-lg overflow-hidden max-h-[430px]">
                     {/* Fixed video source selection */}
@@ -494,7 +448,7 @@ function InputScreen({}: Props) {
 
                 <div class="md:w-2/3 flex flex-col justify-between">
                   <div class="mb-3">
-                    <div class="flex items-center gap-3 justify-between mb-1">
+                    <div class="flex items-center gap-3 justify-between mb-1" style="align-items: flex-start;">
                       {/* Fixed author avatar and nickname with proper null checks */}
                       <img 
                         src={data()!.result!.author?.avatar || "/default-avatar.png"}
@@ -505,12 +459,12 @@ function InputScreen({}: Props) {
                           e.currentTarget.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiNmM2Y0ZjYiLz4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMCIgcj0iMyIgZmlsbD0iIzllYTNhOCIvPgo8cGF0aCBkPSJtNyAxOC4zYTUgNSAwIDAgMSAxMCAwIiBmaWxsPSIjOWVhM2E4Ii8+Cjwvc3ZnPg==";
                         }}
                       />
-                      <h2 class="text-xl font-bold text-gray-900 dark:text-white">
+                      <h2 class="text-xl font-bold text-gray-900 dark:text-white shadow-text">
                         {data()!.result!.author?.nickname || "Unknown User"}
                       </h2>
                       <div class="text-gray-400 text-xs px-2 py-1 bg-white/10 rounded-full"></div>
                     </div>
-                    <div class="text-gray-400 text-xs mb-2">
+                    <div class="text-gray-400 text-xs mb-2 shadow-text">
                       {data()!.result!.desc || "No description available"}
                     </div>
                     
@@ -519,7 +473,7 @@ function InputScreen({}: Props) {
                       <div id="ad-banner" style="min-height:280px;width:336px;margin:0 auto;">
                         {!adLoaded() && (
                           <div style="width:336px;height:280px;display:flex;align-items:center;justify-content:center;background:#f5f5f5;border-radius:8px;">
-                            <div class="animate-pulse text-gray-400">Loading advertisement...</div>
+                            <div class="animate-pulse text-gray-400 shadow-text">Loading advertisement...</div>
                           </div>
                         )}
                       </div>
@@ -530,7 +484,7 @@ function InputScreen({}: Props) {
                     {/* Enhanced download buttons with loading states and external service */}
                     {data()!.result!.videoHD && (
                       <button 
-                        class={`w-full download-button bg-gradient-to-r from-pink-600 to-pink-400 hover:from-pink-500 hover:to-pink-300 text-white px-4 py-2 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 ${downloading() === 'HD' ? 'opacity-75 cursor-not-allowed' : ''}`}
+                        class={`w-full download-button bg-gradient-to-r from-pink-600 to-pink-400 hover:from-pink-500 hover:to-pink-300 text-white px-4 py-2 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 shadow-text ${downloading() === 'HD' ? 'opacity-75 cursor-not-allowed' : ''}`}
                         onClick={() => downloadVideo(
                           data()!.result!.videoHD!, 
                           data()!.result!.author?.nickname || 'tiktok_video', 
@@ -554,7 +508,7 @@ function InputScreen({}: Props) {
                     
                     {data()!.result!.videoWatermark && (
                       <button 
-                        class={`w-full download-button bg-gradient-to-r from-green-600 to-green-400 hover:from-green-500 hover:to-green-300 text-white px-4 py-2 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 ${downloading() === 'Watermark' ? 'opacity-75 cursor-not-allowed' : ''}`}
+                        class={`w-full download-button bg-gradient-to-r from-green-600 to-green-400 hover:from-green-500 hover:to-green-300 text-white px-4 py-2 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 shadow-text ${downloading() === 'Watermark' ? 'opacity-75 cursor-not-allowed' : ''}`}
                         onClick={() => downloadVideo(
                           data()!.result!.videoWatermark!, 
                           data()!.result!.author?.nickname || 'tiktok_video', 
@@ -578,7 +532,7 @@ function InputScreen({}: Props) {
 
                     {data()!.result!.music && (
                       <button 
-                        class={`w-full download-button bg-gradient-to-r from-blue-600 to-blue-400 hover:from-blue-500 hover:to-blue-300 text-white px-4 py-2 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 ${downloading() === 'Audio' ? 'opacity-75 cursor-not-allowed' : ''}`}
+                        class={`w-full download-button bg-gradient-to-r from-blue-600 to-blue-400 hover:from-blue-500 hover:to-blue-300 text-white px-4 py-2 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 shadow-text ${downloading() === 'Audio' ? 'opacity-75 cursor-not-allowed' : ''}`}
                         onClick={() => downloadAudio(
                           data()!.result!.music!, 
                           data()!.result!.author?.nickname || 'tiktok_audio'
@@ -599,7 +553,7 @@ function InputScreen({}: Props) {
                       </button>
                     )}
 
-                    <button class="w-full download-button bg-gradient-to-r from-gray-600 to-gray-400 hover:from-gray-500 hover:to-gray-300 text-white px-4 py-2 rounded-lg transition-all duration-300 flex items-center justify-center gap-2">
+                    <button class="w-full download-button bg-gradient-to-r from-gray-600 to-gray-400 hover:from-gray-500 hover:to-gray-300 text-white px-4 py-2 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 shadow-text">
                       <a href="/" class="flex items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
@@ -614,6 +568,15 @@ function InputScreen({}: Props) {
           </div>
         </div>
       )}
+
+      <style>{`
+        .shadow-text {
+          text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        .flex {
+          align-items: flex-start;
+        }
+      `}</style>
     </div>
   );
 }
