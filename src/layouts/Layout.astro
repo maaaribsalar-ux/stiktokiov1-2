@@ -39,7 +39,7 @@ const resolvedImageWithDomain = new URL(
 const { title } = Astro.props;
 const makeTitle = title
 	? `${title} | TikTokio`
-	: "TikTokio: TikTok Downloader - Download TikTok Videos no Watermark";
+	: "TikTokio - TikTok Downloader Download TikTok Videos Mp4 Free";
 
 // Simplified and safe hreflang generation
 function generateHrefLangs() {
@@ -88,13 +88,13 @@ const hrefLangs = generateHrefLangs();
 		<!-- Global CSS -->
 		<SEO
 			title={makeTitle}
-			description="TikTokio - Tiktok downloader to online download tiktok videos in mp4 without watermark easily, Tiktok video downloader is Fast, easy and works on any device"
+			description="Tiktokio is tiktok downloader, tiktok video downloader and tiktok story downloader download tiktok video without watermark, tiktok to mp4 and tiktok video saver."
 			canonical={canonicalURL}
 			openGraph={{
 				basic: {
 					url: canonicalURL,
 					type: "website",
-					title: `TikTokio: TikTok Downloader - Download TikTok Videos no Watermark`,
+					title: `TikTokio - TikTok Downloader Download TikTok Videos Mp4 Free`,
 					image: resolvedImageWithDomain,
 				},
 				image: {
@@ -106,7 +106,7 @@ const hrefLangs = generateHrefLangs();
 		<!-- Twitter Card -->
 		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="twitter:title" content={makeTitle} />
-		<meta name="twitter:description" content="TikTokio - Tiktok downloader to online download tiktok videos in mp4 without watermark easily, Tiktok video downloader is Fast, easy and works on any device" />
+		<meta name="twitter:description" content="Tiktokio is tiktok downloader, tiktok video downloader and tiktok story downloader download tiktok video without watermark, tiktok to mp4 and tiktok video saver." />
 		<meta name="twitter:image" content={resolvedImageWithDomain} />
 		<meta name="twitter:site" content="@YourTwitterHandle" />
 		<meta name="twitter:creator" content="@tiktokio_cam" />
