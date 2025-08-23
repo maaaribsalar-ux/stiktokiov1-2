@@ -14,7 +14,7 @@ import tailwindcss from "@tailwindcss/vite";
 // https://astro.build/config
 export default defineConfig({
   output: "server",
-  site: "https://tiktokio.cam",
+  site: "https://stiktokio.com",
   adapter: vercel(),
   // Add Astro's built-in i18n configuration
   i18n: {
@@ -33,7 +33,7 @@ export default defineConfig({
   integrations: [
     sitemap({
       filter(page) {
-        const url = new URL(page, 'https://tiktokio.cam');
+        const url = new URL(page, 'https://stiktokio.com');
         
         // All non-English language codes
         const nonEnglishLangs = ['ar', 'it', 'de', 'es', 'fr', 'hi', 'id', 'ko', 'ms', 'nl', 'pt', 'ru', 'tl', 'tr'];
