@@ -4,67 +4,203 @@ import Sectionhead from "@components/sectionhead.astro";
 import Button from "@components/ui/button.astro";
 import Layout from "@layouts/Layout.astro";
 import { changeLanguage } from "i18next";
-
 changeLanguage("en");
 
-const contacts = [
+const values = [
 	{
-		title: "Marketing",
-		email: "test@yourcompany.com",
-		phone: "+1 (555) 555-5555",
+		title: "Innovation",
+		description: "We constantly push the boundaries of what's possible in video content creation and sharing.",
+		icon: "💡",
 	},
 	{
-		title: "Human Resources",
-		email: "test@yourcompany.com",
-		phone: "+1 (555) 555-5555",
+		title: "Accessibility",
+		description: "Making video content accessible to everyone, regardless of technical expertise or platform limitations.",
+		icon: "🌐",
 	},
 	{
-		title: "Finance",
-		email: "test@yourcompany.com",
-		phone: "+1 (555) 555-5555",
+		title: "Privacy",
+		description: "We respect user privacy and ensure secure, safe downloading experiences for all our users.",
+		icon: "🔒",
 	},
 	{
-		title: "Research and Development",
-		email: "test@yourcompany.com",
-		phone: "+1 (555) 555-5555",
+		title: "Quality",
+		description: "Delivering high-quality video downloads with the best possible resolution and audio clarity.",
+		icon: "⭐",
+	},
+];
+
+const teamMembers = [
+	{
+		name: "Jerom Bell",
+		role: "Chief Executive Officer",
+		bio: "Leading our mission to democratize video content with over 10 years in tech innovation.",
+		image: "/images/ceo.webp",
+	},
+	{
+		name: "Michael Chen",
+		role: "Chief Technology Officer",
+		bio: "Architecting scalable solutions that handle millions of downloads with seamless performance.",
+		image: "/images/admin.webp",
+	},
+	{
+		name: "Emily Rodriguez",
+		role: "Head of Product",
+		bio: "Designing user experiences that make video downloading intuitive and enjoyable for everyone.",
+		image: "/images/head.webp",
+	},
+	{
+		name: "Yasmine Tano",
+		role: "Head of Engineering",
+		bio: "Building robust infrastructure that ensures reliability and speed in every video download.",
+		image: "/images/finance.webp",
+	},
+];
+
+const stats = [
+	{
+		number: "10M+",
+		label: "Videos Downloaded",
+		description: "Trusted by millions of users worldwide",
+	},
+	{
+		number: "99.9%",
+		label: "Uptime",
+		description: "Reliable service you can count on",
+	},
+	{
+		number: "150+",
+		label: "Countries Served",
+		description: "Global reach, local experience",
+	},
+	{
+		number: "24/7",
+		label: "Support",
+		description: "Always here when you need us",
+	},
+];
+
+const timeline = [
+	{
+		year: "2020",
+		title: "Company Founded",
+		description: "Started as a simple video downloading tool for content creators",
+	},
+	{
+		year: "2021",
+		title: "Major Platform Support",
+		description: "Expanded to support multiple social media platforms",
+	},
+	{
+		year: "2022",
+		title: "1M Users Milestone",
+		description: "Reached our first million downloads, proving market demand",
+	},
+	{
+		year: "2023",
+		title: "Global Expansion",
+		description: "Launched in over 100 countries with multilingual support",
+	},
+	{
+		year: "2024",
+		title: "Advanced Features",
+		description: "Introduced HD downloads, batch processing, and API services",
 	},
 ];
 ---
 
-<Layout title="Contact">
+<Layout title="About Us">
 	<Container>
 		<Sectionhead>
-			<Fragment slot="title">Contact</Fragment>
-			<Fragment slot="desc">Get in Touch.</Fragment>
+			<Fragment slot="title">About Us</Fragment>
+			<Fragment slot="desc">Empowering creators and content enthusiasts worldwide.</Fragment>
 		</Sectionhead>
 
-		<div class="py-24 sm:py-32">
+		<!-- Hero Section -->
+		<div class="py-16 sm:py-20">
+			<div class="mx-auto max-w-4xl text-center">
+				<h2 class="text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-5xl">
+					Making Video Content <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">Accessible</span> for Everyone
+				</h2>
+				<p class="mt-6 text-lg leading-8 text-gray-600 dark:text-gray-300">
+					We believe that great content should be easily accessible. Our platform empowers millions of users to download, 
+					save, and share their favorite videos while respecting creators' rights and platform guidelines.
+				</p>
+			</div>
+		</div>
+
+		<!-- Mission & Values Section -->
+		<div class="py-16 sm:py-20">
 			<div class="mx-auto max-w-7xl px-6 lg:px-8">
-				<div class="mx-auto max-w-2xl space-y-16 divide-y divide-gray-100 lg:mx-0 lg:max-w-none">
+				<div class="mx-auto max-w-2xl lg:mx-0">
+					<h2 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Our Values</h2>
+					<p class="mt-4 leading-7 text-gray-600 dark:text-gray-200">
+						These core principles guide everything we do and every decision we make.
+					</p>
+				</div>
+				<div class="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-6 sm:grid-cols-2 lg:mx-0 lg:max-w-none lg:grid-cols-4 lg:gap-8">
+					{
+						values.map((value) => (
+							<div class="rounded-2xl bg-gray-50 dark:bg-stone-800 p-8 text-center">
+								<div class="text-4xl mb-4">{value.icon}</div>
+								<h3 class="text-xl font-semibold leading-7 text-gray-900 dark:text-white">{value.title}</h3>
+								<p class="mt-4 text-sm leading-6 text-gray-600 dark:text-gray-300">{value.description}</p>
+							</div>
+						))
+					}
+				</div>
+			</div>
+		</div>
+
+		<!-- Stats Section -->
+		<div class="py-16 sm:py-20 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-stone-800 dark:to-stone-900 rounded-3xl my-16">
+			<div class="mx-auto max-w-7xl px-6 lg:px-8">
+				<div class="mx-auto max-w-2xl lg:mx-0 text-center lg:text-left">
+					<h2 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Our Impact</h2>
+					<p class="mt-4 leading-7 text-gray-600 dark:text-gray-200">
+						Numbers that reflect our commitment to serving our community.
+					</p>
+				</div>
+				<div class="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-6 sm:grid-cols-2 lg:mx-0 lg:max-w-none lg:grid-cols-4 lg:gap-8">
+					{
+						stats.map((stat) => (
+							<div class="text-center lg:text-left">
+								<div class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
+									{stat.number}
+								</div>
+								<div class="mt-2 text-lg font-semibold text-gray-900 dark:text-white">{stat.label}</div>
+								<div class="mt-1 text-sm text-gray-600 dark:text-gray-300">{stat.description}</div>
+							</div>
+						))
+					}
+				</div>
+			</div>
+		</div>
+
+		<!-- Team Section -->
+		<div class="py-16 sm:py-20">
+			<div class="mx-auto max-w-7xl px-6 lg:px-8">
+				<div class="mx-auto max-w-2xl space-y-16 divide-y divide-gray-100 dark:divide-gray-800 lg:mx-0 lg:max-w-none">
 					<div class="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-3">
 						<div>
-							<h2 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Departments</h2>
-							<p class="mt-4 leading-7 text-gray-600 dark:text-gray-200">Reach Out to Our Dedicated Teams.</p>
+							<h2 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Our Team</h2>
+							<p class="mt-4 leading-7 text-gray-600 dark:text-gray-200">
+								Meet the passionate individuals behind our platform's success.
+							</p>
 						</div>
 						<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:col-span-2 lg:gap-8">
 							{
-								contacts.map((item) => (
-									<div class="rounded-2xl bg-gray-50 dark:bg-stone-800 p-10">
-										<h3 class="text-base font-semibold leading-7 text-gray-900 dark:text-white">{item.title}</h3>
-										<dl class="mt-3 space-y-1 text-sm leading-6 text-gray-600 dark:text-white">
+								teamMembers.map((member) => (
+									<div class="rounded-2xl bg-gray-50 dark:bg-stone-800 p-8">
+										<div class="flex items-center gap-4 mb-4">
+											<div class="h-12 w-12 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 flex items-center justify-center text-white font-bold text-lg">
+												{member.name.split(' ').map(n => n[0]).join('')}
+											</div>
 											<div>
-												<dt class="sr-only">Email</dt>
-												<dd>
-													<a class="font-semibold text-stone-600 dark:text-white" href="mailto:collaborate@example.com">
-														{item.email}
-													</a>
-												</dd>
+												<h3 class="text-lg font-semibold leading-7 text-gray-900 dark:text-white">{member.name}</h3>
+												<p class="text-sm font-medium text-purple-600 dark:text-purple-400">{member.role}</p>
 											</div>
-											<div class="mt-1">
-												<dt class="sr-only">Phone number</dt>
-												<dd>{item.phone}</dd>
-											</div>
-										</dl>
+										</div>
+										<p class="text-sm leading-6 text-gray-600 dark:text-gray-300">{member.bio}</p>
 									</div>
 								))
 							}
@@ -73,5 +209,61 @@ const contacts = [
 				</div>
 			</div>
 		</div>
+
+		<!-- Timeline Section -->
+		<div class="py-16 sm:py-20">
+			<div class="mx-auto max-w-7xl px-6 lg:px-8">
+				<div class="mx-auto max-w-2xl lg:mx-0 mb-16">
+					<h2 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Our Journey</h2>
+					<p class="mt-4 leading-7 text-gray-600 dark:text-gray-200">
+						Key milestones that shaped our platform and community.
+					</p>
+				</div>
+				<div class="space-y-8">
+					{
+						timeline.map((item, index) => (
+							<div class="flex gap-6">
+								<div class="flex flex-col items-center">
+									<div class="h-12 w-12 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 flex items-center justify-center text-white font-bold">
+										{item.year.slice(-2)}
+									</div>
+									{index !== timeline.length - 1 && (
+										<div class="w-px h-16 bg-gray-200 dark:bg-gray-700 mt-4"></div>
+									)}
+								</div>
+								<div class="pb-8">
+									<div class="flex items-center gap-4 mb-2">
+										<h3 class="text-lg font-semibold text-gray-900 dark:text-white">{item.title}</h3>
+										<span class="text-sm font-medium text-purple-600 dark:text-purple-400">{item.year}</span>
+									</div>
+									<p class="text-gray-600 dark:text-gray-300">{item.description}</p>
+								</div>
+							</div>
+						))
+					}
+				</div>
+			</div>
+		</div>
+
+		<!-- CTA Section -->
+		<div class="py-16 sm:py-20 text-center">
+			<div class="mx-auto max-w-2xl">
+				<h2 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
+					Ready to Experience the Difference?
+				</h2>
+				<p class="mt-4 text-lg leading-8 text-gray-600 dark:text-gray-300">
+					Join millions of users who trust our platform for their video downloading needs.
+				</p>
+				<div class="mt-8 flex items-center justify-center gap-4">
+					<Button href="/" size="lg">
+						Try Our Service
+					</Button>
+					<Button href="/contact" variant="outline" size="lg">
+						Get in Touch
+					</Button>
+				</div>
+			</div>
+		</div>
+
 	</Container>
 </Layout>
