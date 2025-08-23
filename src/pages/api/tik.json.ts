@@ -53,11 +53,10 @@ export const GET: APIRoute = async (context) => {
 
     if (!urlTik) {
       console.log("9. ERROR: No URL parameter found with any method");
-      console.log("Last Response", contextUrl);
       return new Response(
         JSON.stringify({
-          error: "url is required",
           status: "error",
+          message: "url parameter is required",
           debug: {
             requestUrl: requestUrl,
             contextUrl: contextUrl ? contextUrl.href : null,
@@ -79,8 +78,8 @@ export const GET: APIRoute = async (context) => {
       console.log("10. ERROR: Invalid TikTok URL format");
       return new Response(
         JSON.stringify({
-          error: "Invalid TikTok URL format",
           status: "error",
+          message: "Invalid TikTok URL format. Please provide a valid TikTok or Douyin URL.",
         }),
         {
           status: 400,
@@ -97,33 +96,33 @@ export const GET: APIRoute = async (context) => {
     let processedUrl = urlTik;
     if (urlTik.includes("douyin")) {
       try {
-        processedUrl = await fetch(urlTik, {
+        const response = await fetch(urlTik, {
           method: "HEAD",
           redirect: "follow",
-        }).then((response) => {
-          return response.url.replace("douyin", "tiktok");
         });
+        processedUrl = response.url.replace("douyin", "tiktok");
         console.log("12. Processed douyin URL:", processedUrl);
       } catch (e) {
         console.error("Error processing douyin URL:", e);
       }
     }
 
-    // Call the TikTok downloader
+    // Call the TikTok downloader with version 3
     console.log("13. Calling Downloader with URL:", processedUrl);
-    let data = await Downloader(processedUrl, {
+    const data = await Downloader(processedUrl, {
       version: "v3",
     });
 
     console.log("14. TikTok API response status:", data?.status);
+    console.log("15. TikTok API response result:", data?.result);
 
     // Check if the response is successful
     if (!data || data.status === "error") {
-      console.log("15. ERROR: TikTok API returned error");
+      console.log("16. ERROR: TikTok API returned error");
       return new Response(
         JSON.stringify({
-          error: data?.message || "Failed to fetch video data",
           status: "error",
+          message: data?.message || "Failed to fetch video data from TikTok API",
         }),
         {
           status: 400,
@@ -136,11 +135,11 @@ export const GET: APIRoute = async (context) => {
 
     // Validate response structure
     if (!data.result) {
-      console.log("16. ERROR: No result data in response");
+      console.log("17. ERROR: No result data in response");
       return new Response(
         JSON.stringify({
-          error: "Invalid response format - missing result data",
           status: "error",
+          message: "Invalid response format - missing result data",
         }),
         {
           status: 400,
@@ -151,41 +150,61 @@ export const GET: APIRoute = async (context) => {
       );
     }
 
-    // Process the data
+    // Process the data to ensure it matches our interface
+    const processedData = {
+      status: data.status,
+      message: data.message,
+      result: {
+        type: data.result.type || "video",
+        desc: data.result.desc || "",
+        author: data.result.author || {
+          avatar: "",
+          nickname: "Unknown User"
+        },
+        music: data.result.music || "",
+        images: data.result.images || [],
+        videoHD: data.result.videoHD || "",
+        videoWatermark: data.result.videoWatermark || "",
+        uploadDate: null
+      }
+    };
+
+    // Handle story type detection
     const isStory = processedUrl.includes("/story/");
-    if (isStory && data.result) {
-      data.result.type = "story";
+    if (isStory && processedData.result) {
+      processedData.result.type = "story";
     }
 
-    // Add upload date
-    const createTime = data?.result?.create_time;
-    const uploadDate = createTime ? new Date(createTime * 1000).toISOString() : null;
-    if (data.result) {
-      data.result.uploadDate = uploadDate;
+    // Try to add upload date if available
+    try {
+      const createTime = (data.result as any)?.create_time;
+      if (createTime) {
+        const uploadDate = new Date(createTime * 1000).toISOString();
+        processedData.result.uploadDate = uploadDate;
+      }
+    } catch (e) {
+      console.log("Could not parse upload date:", e);
     }
 
-    // Ensure author object exists
-    if (data.result && !data.result.author) {
-      data.result.author = {
-        avatar: null,
-        nickname: "Unknown Author",
-      };
-    }
-
-    console.log("17. SUCCESS: Returning processed data");
-    return new Response(JSON.stringify(data), {
+    console.log("18. SUCCESS: Returning processed data");
+    console.log("19. Processed data structure:", JSON.stringify(processedData, null, 2));
+    
+    return new Response(JSON.stringify(processedData), {
       status: 200,
       headers: {
         "content-type": "application/json",
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, POST, OPTIONS",
+        "access-control-allow-headers": "Content-Type",
       },
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("=== API ERROR ===", error);
     return new Response(
       JSON.stringify({
-        error: error.message || "Internal server error",
         status: "error",
-        stack: error.stack,
+        message: error.message || "Internal server error",
+        stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
       }),
       {
         status: 500,
