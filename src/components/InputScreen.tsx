@@ -1,5 +1,6 @@
 import { toast, Toaster } from "solid-toast";
 import { createSignal, onCleanup } from "solid-js";
+import "../public/style.css"; 
 
 // Updated interface to match the actual API response
 interface TikTokData {
@@ -290,6 +291,137 @@ function InputScreen({}: Props) {
     <div class="max-w-6xl mx-auto mt-8 px-4">
       <Toaster />
 
+
+
+<div class="relative isolate px-6 pt-10 lg:px-8 pb-28 bg-orange-500">
+  <div
+    class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
+    aria-hidden="true"
+  >
+  </div>
+  <div class="mx-auto max-w-screen-xl another">
+    <div class="text-center">
+      <h1 class="text-4xl font-bold tracking-tight text-white">{heading}</h1>
+      <p class="my-2 text-lg leading-8 text-gray-200">{subheading}</p>
+    </div>
+
+    <div class="pageTunerWrapper">
+      <div class="pageTunerWrapper__items">
+        <div class="pageTunerWrapper__item">
+          <a href="/" data-gtag-click="top_panel_video_click"
+            ><img
+              src="/images/tiktok-video.svg"
+              alt="Video"
+              width="24"
+              height="24"
+              loading="lazy"
+            /><span class="md:block hidden">Video</span></a
+          >
+        </div>
+        <div class="pageTunerWrapper__item">
+          <a
+            href="/tiktok-slideshow-downloader"
+            data-gtag-click="top_panel_photo_click"
+            ><img
+              src="/images/tiktok-photo.svg"
+              alt="Photo"
+              width="24"
+              height="24"
+              loading="lazy"
+            /><span class="md:block hidden">Photo</span></a
+          >
+        </div>
+        <div class="pageTunerWrapper__item">
+          <a
+            href="/tiktok-story-downloader"
+            data-gtag-click="top_panel_story_click"
+            ><img
+              src="/images/story.svg"
+              alt="Story"
+              width="24"
+              height="24"
+              loading="lazy"
+            /><span class="md:block hidden">Story</span></a
+          >
+        </div>
+        <div class="pageTunerWrapper__item">
+          <a
+            href="/tiktok-sound-downloader"
+            data-gtag-click="top_panel_sound_click"
+            ><img
+              src="/images/tiktok-audio.svg"
+              alt="Sound"
+              width="24"
+              height="24"
+              loading="lazy"
+            /><span class="md:block hidden">Mp3</span></a
+          >
+        </div>
+      </div>
+    </div>
+
+    <div class="relative max-w-4xl mx-auto mt-8">
+      <form class="block items-center sm:space-x-4 sm:flex sub-form">
+        <div class="relative flex-1">
+          <input
+            type="text"
+            placeholder="Paste tiktok video link here"
+            class="w-full pr-14 pl-4 outline-none rounded-md py-5 text-black placeholder-gray-500 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent down-url bg-[#F9E2D2]"
+            style="box-shadow: 0 0 2px rgb(255, 255, 255) !important;"
+            id="tiktok-url"
+          />
+          <button
+            class="px-8 py-[14px] bg-[#2172F6] text-xl text-white font-semibold rounded-lg shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 outline-none mt-10 sm:mt-0 w-full sm:w-auto send-btn cursor-pointer sm:absolute right-1 top-[50%] translate-y-[-50%]"
+            type="submit"
+            id="down-btn"
+          >
+            Download
+            <div>
+              <button
+                class="px-[2px] py-[12px] right-2 sm:right-[180px] absolute rounded-lg top-[20%] sm:top-[50%] translate-y-[-50%]"
+                style="background: linear-gradient(54.09deg, #0348dd 2.03%, #8142f5 48.63%, #ee4dd4 96.22%), linear-gradient(0deg, rgba(201, 46, 255, .15), rgba(201, 46, 255, .15))"
+                type="button"
+              >
+                <img src="/images/paste.webp" class="aspect-auto absolute top-[50%] translate-y-[-50%] left-[17px]" alt=""/>
+                <span
+                  class="bg-[#F2D1FD] px-8 py-[12px] text-xl rounded-lg"
+                  id="paste-btn"
+                >Paste</span>
+              </button>
+            </div>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="loader items-center justify-center hidden bg-orange-500">
+    <img src="/src/icons/loader.webp" alt="loader" />
+  </div>
+
+  <div class="bg-orange-500 py-16 px-4 sm:px-6 lg:px-8 main-div hidden">
+    <div class="max-w-7xl mx-auto">
+      <h2></h2>
+      <h2 class="text-2xl text-center mb-4 shadow-text msg break-all"></h2>
+      <div class="flex flex-wrap justify-center gap-8">
+        <div
+          class="gap-8 down-div grid lg:grid-cols-1 xl:grid-cols-2 grid-cols-1"
+        >
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .shadow-text {
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+    .flex {
+      align-items: flex-start;
+    }
+  </style>
+</div>
+      
       {/* Input Form Section */}
       <div class="max-w-6xl mx-auto">
         <div class="download-box rounded-2xl">
