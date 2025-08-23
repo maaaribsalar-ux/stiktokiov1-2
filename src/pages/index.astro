@@ -1,13 +1,13 @@
 ---
 import Container from "@components/container.astro";
-import Faq from "@components/faq.astro";
-import Features from "@components/features.astro";
-import Hero from "@components/hero.astro";
 import Layout from "@layouts/Layout.astro";
 
-// Remove old astro-i18next imports
-// import { changeLanguage } from "i18next";
-// changeLanguage("en");
+import Hero from "@components/hero.astro";
+import Features from "@components/features.astro";
+import Newsletter from "@components/newsletter.astro";
+import Logos from "@components/logos.astro";
+import Faq from "@components/faq.astro";
+
 
 // Add new built-in i18n imports
 import { getLangFromUrl, useTranslations } from "../i18n/utils";
@@ -22,7 +22,8 @@ const t = useTranslations(lang);
 	<Container>
 		<Hero />
 		<Features />
-		
+		<Newsletter />
+        <Logos />
 		<Faq />
 		
 	</Container>
