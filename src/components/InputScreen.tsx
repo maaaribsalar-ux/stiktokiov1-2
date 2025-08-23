@@ -293,7 +293,7 @@ function InputScreen({}: Props) {
       {/* Input Form Section */}
       <div class="max-w-6xl mx-auto">
         <div class="download-box rounded-2xl">
-          <div class="bg-cyan-800/80 rounded-xl backdrop-blur-md p-4">
+          <div class="bg-orange-400 rounded backdrop-blur-md p-4">
             <form class="flex flex-col md:flex-row items-stretch md:items-center gap-2"
               onSubmit={(e) => {
                 e.preventDefault();
