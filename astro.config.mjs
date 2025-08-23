@@ -16,7 +16,6 @@ export default defineConfig({
   output: "server",
   site: "https://tiktokio.cam",
   adapter: vercel(),
-
   // Add Astro's built-in i18n configuration
   i18n: {
     defaultLocale: "en",
@@ -25,35 +24,34 @@ export default defineConfig({
       prefixDefaultLocale: false, // /about for English, /it/about for Italian
     },
   },
-
   vite: {
     plugins: [tailwindcss()],
     define: {
-      __DATE__: `'${new Date().toISOString()}'`, // Fixed: __ instead of **
+      __DATE__: `'${new Date().toISOString()}'`, // Fixed: corrected to double underscores
     },
   },
   integrations: [
     sitemap({
-  filter(page) {
-    const url = new URL(page, 'https://tiktokio.cam');
-    
-    // All non-English language codes
-    const nonEnglishLangs = ['ar', 'it', 'de', 'es', 'fr', 'hi', 'id', 'ko', 'ms', 'nl', 'pt', 'ru', 'tl', 'tr'];
-    
-    // Should exclude if:
-    const shouldExclude = 
-      // Non-English blog posts (but keeps /{lang}/blog/ index pages)
-      nonEnglishLangs.some(lang => 
-        url.pathname.startsWith(`/${lang}/blog/`) && 
-        url.pathname !== `/${lang}/blog/`
-      ) ||
-      // Pagination, tags, categories
-      /\/blog\/\d+\//.test(url.pathname) ||
-      url.pathname.includes('/tag/') || 
-      url.pathname.includes('/category/');
-    return !shouldExclude;
-  }
-})
+      filter(page) {
+        const url = new URL(page, 'https://tiktokio.cam');
+        
+        // All non-English language codes
+        const nonEnglishLangs = ['ar', 'it', 'de', 'es', 'fr', 'hi', 'id', 'ko', 'ms', 'nl', 'pt', 'ru', 'tl', 'tr'];
+        
+        // Should exclude if:
+        const shouldExclude = 
+          // Non-English blog posts (but keeps /{lang}/blog/ index pages)
+          nonEnglishLangs.some(lang => 
+            url.pathname.startsWith(`/${lang}/blog/`) && 
+            url.pathname !== `/${lang}/blog/`
+          ) ||
+          // Pagination, tags, categories
+          /\/blog\/\d+\//.test(url.pathname) ||
+          url.pathname.includes('/tag/') || 
+          url.pathname.includes('/category/');
+        return !shouldExclude;
+      }
+    }), // <- ADDED MISSING COMMA HERE
     // Remove astroI18next() - not needed anymore
     alpinejs(),
     solidJs(), // Added SolidJS integration
