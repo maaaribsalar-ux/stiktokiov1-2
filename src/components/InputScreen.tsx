@@ -332,7 +332,7 @@ const InputScreen = (props: Props) => {
                             ></path>
                           </svg>
                         )}
-                        {downloading() === "HD" ? "Downloading..." : "Download Video"}
+                        {downloading() === "HD" ? "Downloading..." : "Download Video (Without Watermark)"}
                       </button>
                     )}
 
