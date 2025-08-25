@@ -1,5 +1,5 @@
 ---
-import { getLangFromUrl, useTranslations } from "../i18n/utils";
+import { getLangFromUrl, useTranslations } from "../../i18n/utils";
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { getArticleReadingTime } from "@utils/blog";
 import { Icon } from "astro-icon/components";
@@ -61,7 +61,6 @@ function localizePath(path: string) {
 						<div class="flex gap-2 mt-3">
 							<span class="text-gray-400">
 								<Icon name="fluent:person-24-filled" width="20" />
-
 							</span>
 							<span class="text-sm text-gray-400">
 								{post.data.author}
