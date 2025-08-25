@@ -11,6 +11,7 @@ interface TikTokData {
     play: string;
     preview: string;
     cover: string;
+    canonicalUrl: string;
   };
   error?: string;
   detail?: string;
@@ -31,8 +32,8 @@ const InputScreen = (props: Props) => {
     setData(null);
 
     try {
-      // Validate URL format
-      if (!url().match(/^https:\/\/(www\.)?tiktok\.com\/.+/)) {
+      // Validate URL format (accept various TikTok domains)
+      if (!url().match(/^https:\/\/(www\.|vm\.|vt\.|m\.)?tiktok\.com\/.+/)) {
         throw new Error("Invalid TikTok URL");
       }
 
@@ -60,7 +61,7 @@ const InputScreen = (props: Props) => {
       }
 
       setData(json);
-      toast.success("Video data fetched successfully!", {
+      toast.success(`Video data fetched! Resolved URL: ${json.data.canonicalUrl}`, {
         duration: 3000,
         position: "bottom-center",
         style: {
@@ -119,10 +120,10 @@ const InputScreen = (props: Props) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Accept: "video/mp4,*/*", // Accept broader content types
+          Accept: "video/mp4,*/*",
           Origin: window.location.origin,
         },
-        body: JSON.stringify({ url: url() }),
+        body: JSON.stringify({ url: data()?.data.canonicalUrl || url() }),
       });
 
       console.log("Response status:", response.status, "Headers:", Object.fromEntries(response.headers.entries()));
@@ -134,13 +135,15 @@ const InputScreen = (props: Props) => {
 
       // Convert response to blob
       const blob = await response.blob();
-      if (blob.size === 0) {
-        throw new Error("Received empty video file");
+      console.log("Blob size:", blob.size, "Blob type:", blob.type);
+
+      // Check for invalid blob
+      if (blob.size < 1000 && !blob.type.includes("video/")) {
+        throw new Error("Received invalid or empty video file");
       }
 
-      const downloadUrl = window.URL.createObjectURL(blob);
-
       // Create download link
+      const downloadUrl = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = downloadUrl;
       link.download = `${filename}.mp4`;
@@ -249,7 +252,7 @@ const InputScreen = (props: Props) => {
                     {data()!.data.preview ? (
                       <video
                         controls
-                        src={data()!.data.preview} // Use preview URL for playback
+                        src={data()!.data.preview}
                         class="w-full h-full object-cover"
                         referrerpolicy="no-referrer"
                         crossorigin="anonymous"
@@ -332,7 +335,7 @@ const InputScreen = (props: Props) => {
                             ></path>
                           </svg>
                         )}
-                        {downloading() === "HD" ? "Downloading..." : "Download Video (Without Watermark)"}
+                        {downloading() === "HD" ? "Downloading..." : "Download Video"}
                       </button>
                     )}
 
