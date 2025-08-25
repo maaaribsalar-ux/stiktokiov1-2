@@ -22,7 +22,8 @@ export async function getStaticPaths() {
 		});
 		
 		console.log(`Found ${blogEntries.length} total blog entries`);
-		
+
+
 		// Filter for English blog posts and process slugs
 		const localizedBlogEntries = blogEntries
 			.filter((entry) => {
