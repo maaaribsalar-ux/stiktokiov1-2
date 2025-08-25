@@ -10,23 +10,45 @@ import { getLangFromUrl, useTranslations } from "../../i18n/utils";
 
 export async function getStaticPaths({ paginate }) {
   try {
-    // Get all blog posts
+    console.log("Starting getStaticPaths for blog pagination...");
+    
+    // Get all blog posts with better error handling
     const posts = await getCollection("blog", ({ data }) => {
-      return !data.draft && data.publishDate instanceof Date;
+      const isNotDraft = !data.draft;
+      const hasValidDate = data.publishDate instanceof Date;
+      const isPublished = data.publishDate <= new Date();
+      
+      console.log("Post check:", {
+        title: data.title,
+        isNotDraft,
+        hasValidDate,
+        isPublished,
+        publishDate: data.publishDate
+      });
+      
+      return isNotDraft && hasValidDate && isPublished;
     });
 
-    // Preprocess the posts to split the slugs and get the languages
+    console.log(`Found ${posts.length} total posts`);
+
+    // Process posts to extract language information
     const processedPosts = posts.map((post) => {
       const slugParts = post.slug.split("/");
       let lang = "en"; // Default to English
+      let finalSlug = post.slug;
 
       // If the slug starts with a language code, extract it
-      if (slugParts.length > 1) {
+      if (slugParts.length > 1 && slugParts[0].length === 2) {
         lang = slugParts[0];
+        finalSlug = slugParts.slice(1).join("/");
       }
 
-      // Remove language prefix from slug for the final slug
-      const finalSlug = slugParts.length > 1 ? slugParts.slice(1).join("/") : post.slug;
+      console.log("Processing post:", {
+        originalSlug: post.slug,
+        finalSlug,
+        lang,
+        title: post.data.title
+      });
 
       return {
         ...post,
@@ -40,6 +62,8 @@ export async function getStaticPaths({ paginate }) {
       (post) => post.lang === "en",
     );
 
+    console.log(`Found ${localizedPosts.length} English posts`);
+
     // Sort by publish date (newest first)
     localizedPosts.sort(
       (a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf(),
@@ -47,6 +71,7 @@ export async function getStaticPaths({ paginate }) {
 
     // Ensure at least one page is generated, even if no posts
     if (localizedPosts.length === 0) {
+      console.log("No posts found, generating empty page");
       return [
         {
           params: { page: undefined }, // For /blog
@@ -70,11 +95,16 @@ export async function getStaticPaths({ paginate }) {
       ];
     }
 
+    console.log("Generating paginated routes...");
+
     // Generate paginated routes
-    return paginate(localizedPosts, {
+    const paginatedResults = paginate(localizedPosts, {
       pageSize: 4,
-      params: { page: undefined }, // Ensure /blog is generated for page 1
     });
+
+    console.log(`Generated ${paginatedResults.length} paginated routes`);
+
+    return paginatedResults;
   } catch (error) {
     console.error("Error in getStaticPaths:", error);
     // Return single page with empty data on error
