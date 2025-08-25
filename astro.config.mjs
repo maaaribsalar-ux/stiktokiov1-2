@@ -1,4 +1,3 @@
-```javascript
 import { defineConfig } from "astro/config";
 import sitemap from "@astrojs/sitemap";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
@@ -112,4 +111,3 @@ export default defineConfig({
     },
   },
 });
-```
