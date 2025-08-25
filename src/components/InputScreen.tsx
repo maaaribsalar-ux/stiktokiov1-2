@@ -1,5 +1,6 @@
+
 import { toast, Toaster } from "solid-toast";
-import { createSignal } from "solid-js";
+import { createSignal, createEffect, onCleanup, Show } from "solid-js";
 
 // Interface matching the tik.json.ts response
 interface TikTokData {
@@ -25,6 +26,7 @@ const InputScreen = (props: Props) => {
   const [loading, setLoading] = createSignal(false);
   const [error, setError] = createSignal("");
   const [downloading, setDownloading] = createSignal("");
+  let adContainerRef: HTMLDivElement | undefined;
 
   const fetchData = async () => {
     setLoading(true);
@@ -174,12 +176,40 @@ const InputScreen = (props: Props) => {
     }
   };
 
+  // Dynamically append ad script when data is loaded
+  createEffect(() => {
+    if (data() && adContainerRef) {
+      // Clean up any existing scripts
+      adContainerRef.innerHTML = '';
+
+      const script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.textContent = `
+        if (typeof aclib !== 'undefined' && aclib.runBanner) {
+          aclib.runBanner({
+            zoneId: '9480206',
+          });
+        } else {
+          console.warn('Adcash library not loaded');
+        }
+      `;
+      adContainerRef.appendChild(script);
+
+      // Cleanup on component unmount or data change
+      onCleanup(() => {
+        if (adContainerRef) {
+          adContainerRef.innerHTML = '';
+        }
+      });
+    }
+  });
+
   return (
     <div class="max-w-6xl mx-auto mt-8 px-4">
       <Toaster />
 
       {/* Input Form Section */}
-      <div class="max-w-6xl mx-auto">
+      <div class="max-w-6xl mx-auto min-h-[100px]">
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -217,7 +247,7 @@ const InputScreen = (props: Props) => {
       </div>
 
       {/* Error Display */}
-      {error() && (
+      <Show when={error()}>
         <div class="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
           <div class="flex items-start gap-3">
             <svg class="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
@@ -233,9 +263,9 @@ const InputScreen = (props: Props) => {
             </div>
           </div>
         </div>
-      )}
+      </Show>
 
-      {loading() && (
+      <Show when={loading()}>
         <div class="flex flex-col justify-center items-center mt-4">
           <svg class="animate-spin h-10 w-10 text-blue-600" viewBox="0 0 24 24">
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none" />
@@ -243,26 +273,16 @@ const InputScreen = (props: Props) => {
           </svg>
           <p class="text-sm text-gray-600 mt-2">Fetching video...</p>
         </div>
-      )}
+      </Show>
 
-      {data() && data()?.data && (
+      <Show when={data() && data()?.data}>
         <div class="mt-6">
           <div class="max-w-6xl mx-auto">
             <div class="bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-lg overflow-hidden backdrop-blur-sm border border-white/10 p-4">
               <div class="flex flex-col md:flex-row gap-4">
                 <div class="md:w-1/3 flex-shrink-0">
                   <div class="relative rounded-lg overflow-hidden max-h-[430px]">
-                    {data()!.data.preview ? (
-                      <video
-                        controls
-                        src={data()!.data.preview}
-                        class="w-full h-full object-cover"
-                        referrerpolicy="no-referrer"
-                        crossorigin="anonymous"
-                      >
-                        Your browser does not support the video tag.
-                      </video>
-                    ) : (
+                    <Show when={data()!.data.preview} fallback={
                       <div class="w-full h-[300px] bg-gray-200 flex items-center justify-center rounded-lg">
                         <div class="text-center text-gray-500">
                           <svg class="w-16 h-16 mx-auto mb-2" fill="currentColor" viewBox="0 0 20 20">
@@ -275,7 +295,17 @@ const InputScreen = (props: Props) => {
                           <p>Video preview not available</p>
                         </div>
                       </div>
-                    )}
+                    }>
+                      <video
+                        controls
+                        src={data()!.data.preview}
+                        class="w-full h-full object-cover"
+                        referrerpolicy="no-referrer"
+                        crossorigin="anonymous"
+                      >
+                        Your browser does not support the video tag.
+                      </video>
+                    </Show>
                   </div>
                 </div>
 
@@ -298,8 +328,13 @@ const InputScreen = (props: Props) => {
                     <div class="text-gray-400 text-xs mb-2">{data()!.data.title || "No description available"}</div>
                   </div>
 
+                  {/* Advertisement */}
+                  <div ref={adContainerRef} class="mt-4 w-full max-w-[336px] h-[280px] flex items-center justify-center">
+                    <div class="text-gray-500 text-sm text-center">Advertisement</div>
+                  </div>
+
                   <div class="space-y-2">
-                    {data()!.data.play && (
+                    <Show when={data()!.data.play}>
                       <button
                         class={`w-full bg-gradient-to-r from-blue-600 to-blue-400 hover:from-blue-500 hover:to-blue-300 text-white px-4 py-2 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 ${
                           downloading() === "HD" ? "opacity-75 cursor-not-allowed" : ""
@@ -335,12 +370,12 @@ const InputScreen = (props: Props) => {
                               stroke-linejoin="round"
                               stroke-width="2"
                               d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                            ></path>
+                            />
                           </svg>
                         )}
                         {downloading() === "HD" ? "Downloading..." : "Download Video"}
                       </button>
-                    )}
+                    </Show>
 
                     <button
                       class="w-full bg-gradient-to-r from-gray-600 to-gray-400 hover:from-gray-500 hover:to-gray-300 text-white px-4 py-2 rounded-lg transition-all duration-300 flex items-center justify-center gap-2"
@@ -358,7 +393,7 @@ const InputScreen = (props: Props) => {
                             stroke-linejoin="round"
                             stroke-width="2"
                             d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                          ></path>
+                          />
                         </svg>
                         Download Another Video
                       </a>
@@ -369,7 +404,7 @@ const InputScreen = (props: Props) => {
             </div>
           </div>
         </div>
-      )}
+      </Show>
     </div>
   );
 };
