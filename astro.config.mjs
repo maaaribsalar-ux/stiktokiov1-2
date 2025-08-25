@@ -11,7 +11,7 @@ import vercel from "@astrojs/vercel"; // Fixed: removed /serverless
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
-  output: "hybrid", // Fixed: changed from "hybrid" to "static"
+  output: "static", 
   site: "https://stiktokio.com",
   adapter: vercel(),
   // Add Astro's built-in i18n configuration
