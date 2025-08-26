@@ -233,7 +233,9 @@ function InputScreen({}: Props) {
       const permission = await navigator.permissions.query({ name: 'clipboard-read' as any });
       if (permission.state === 'granted' || permission.state === 'prompt') {
         const text = await navigator.clipboard.readText();
+        console.log("=== PASTE PROCESSING ===");
         console.log("Pasted raw text:", text);
+        console.log("Text length:", text.length);
         
         // Extract and clean the TikTok URL from the pasted text
         const extractedUrl = extractTikTokUrl(text);
@@ -241,31 +243,55 @@ function InputScreen({}: Props) {
         
         console.log("Extracted URL:", extractedUrl);
         console.log("Cleaned URL:", cleanedUrl);
+        console.log("URL length:", cleanedUrl.length);
         
         setUrl(cleanedUrl);
         
         // Auto-validate pasted URL and provide feedback
         if (cleanedUrl && isValidTikTokUrl(cleanedUrl)) {
-          // Check if we extracted a URL from text with promotional content
-          const isPromotionalContent = text.length > cleanedUrl.length + 20; // More than just URL + small buffer
+          // Enhanced detection for promotional content
+          const isPromotionalContent = (
+            text.length > cleanedUrl.length + 15 && // More than just URL + small buffer
+            (
+              text.toLowerCase().includes('tiktok lite') ||
+              text.toLowerCase().includes('download tiktok') ||
+              text.toLowerCase().includes('shared via') ||
+              text.toLowerCase().includes('this post is') ||
+              text.includes('://www.tiktok.com/tiktoklite') ||
+              text.split(' ').length > 8 // More than 8 words suggests promotional text
+            )
+          );
+          
+          console.log("Is promotional content:", isPromotionalContent);
+          console.log("Content indicators:", {
+            lengthDiff: text.length - cleanedUrl.length,
+            hasTikTokLite: text.toLowerCase().includes('tiktok lite'),
+            hasDownloadTikTok: text.toLowerCase().includes('download tiktok'),
+            hasSharedVia: text.toLowerCase().includes('shared via'),
+            wordCount: text.split(' ').length
+          });
           
           if (isPromotionalContent) {
+            console.log("Auto-processing promotional content...");
             setAutoProcessing(true);
-            toast.success("TikTok URL extracted! Starting download...", {
-              duration: 2000,
+            
+            toast.success("TikTok URL extracted! Starting download automatically...", {
+              duration: 2500,
               position: "bottom-center",
               style: {
                 "font-size": "14px",
               },
             });
             
-            // Auto-start processing for promotional content after a brief delay
+            // Auto-start processing for promotional content
             setTimeout(() => {
+              console.log("Executing auto fetchData...");
               fetchData();
-            }, 800); // Small delay to let user see the extraction feedback
+            }, 1200); // Slightly longer delay to ensure UI updates
             
           } else {
-            toast.success("Valid TikTok URL pasted!", {
+            console.log("Direct URL pasted, no auto-processing");
+            toast.success("Valid TikTok URL pasted! Click Download to process.", {
               duration: 1500,
               position: "bottom-center",
             });
@@ -278,6 +304,7 @@ function InputScreen({}: Props) {
         }
       }
     } catch (err) {
+      console.error("Paste error:", err);
       toast.error("Clipboard access denied");
     }
   };
@@ -434,6 +461,80 @@ function InputScreen({}: Props) {
                     if (error()) {
                       setError("");
                     }
+
+                    // Auto-detect and process promotional content when typing/pasting into input
+                    if (newUrl && newUrl.length > 50 && newUrl.includes('tiktok')) {
+                      const extractedUrl = extractTikTokUrl(newUrl);
+                      const cleanedUrl = cleanTikTokUrl(extractedUrl);
+                      
+                      // Check if this looks like promotional content
+                      const isPromotionalContent = (
+                        newUrl.length > cleanedUrl.length + 15 &&
+                        (
+                          newUrl.toLowerCase().includes('tiktok lite') ||
+                          newUrl.toLowerCase().includes('download tiktok') ||
+                          newUrl.toLowerCase().includes('shared via') ||
+                          newUrl.toLowerCase().includes('this post is') ||
+                          newUrl.includes('://www.tiktok.com/tiktoklite') ||
+                          newUrl.split(' ').length > 8
+                        )
+                      );
+
+                      if (isPromotionalContent && cleanedUrl !== newUrl) {
+                        console.log("Auto-processing detected in input field");
+                        setUrl(cleanedUrl);
+                        setAutoProcessing(true);
+                        
+                        toast.success("TikTok URL extracted! Starting download automatically...", {
+                          duration: 2500,
+                          position: "bottom-center",
+                        });
+                        
+                        // Auto-process after short delay
+                        setTimeout(() => {
+                          fetchData();
+                        }, 1200);
+                      }
+                    }
+                  }}
+                  onPaste={(e) => {
+                    // Handle paste event directly in the input field
+                    setTimeout(() => {
+                      const pastedText = e.currentTarget.value;
+                      console.log("Direct paste in input:", pastedText);
+                      
+                      if (pastedText && pastedText.length > 50) {
+                        const extractedUrl = extractTikTokUrl(pastedText);
+                        const cleanedUrl = cleanTikTokUrl(extractedUrl);
+                        
+                        const isPromotionalContent = (
+                          pastedText.length > cleanedUrl.length + 15 &&
+                          (
+                            pastedText.toLowerCase().includes('tiktok lite') ||
+                            pastedText.toLowerCase().includes('download tiktok') ||
+                            pastedText.toLowerCase().includes('shared via') ||
+                            pastedText.toLowerCase().includes('this post is') ||
+                            pastedText.includes('://www.tiktok.com/tiktoklite') ||
+                            pastedText.split(' ').length > 8
+                          )
+                        );
+
+                        if (isPromotionalContent && cleanedUrl !== pastedText) {
+                          console.log("Auto-processing pasted promotional content");
+                          setUrl(cleanedUrl);
+                          setAutoProcessing(true);
+                          
+                          toast.success("TikTok URL extracted! Starting download automatically...", {
+                            duration: 2500,
+                            position: "bottom-center",
+                          });
+                          
+                          setTimeout(() => {
+                            fetchData();
+                          }, 1200);
+                        }
+                      }
+                    }, 100); // Small delay to let paste complete
                   }}
                   placeholder="Paste TikTok video link or shared content here (we'll extract the URL automatically)"
                   class="w-full h-14 border-gray-700 text-black rounded-xl px-5 pr-20 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300"
