@@ -27,6 +27,7 @@ function InputScreen({}: Props) {
   const [loading, setLoading] = createSignal(false);
   const [error, setError] = createSignal("");
   const [adLoaded, setAdLoaded] = createSignal(false);
+  const [autoProcessing, setAutoProcessing] = createSignal(false);
 
   // Function to extract TikTok URL from text that might contain promotional content
   const extractTikTokUrl = (text: string): string => {
@@ -246,14 +247,23 @@ function InputScreen({}: Props) {
         // Auto-validate pasted URL and provide feedback
         if (cleanedUrl && isValidTikTokUrl(cleanedUrl)) {
           // Check if we extracted a URL from text with promotional content
-          if (text.length > cleanedUrl.length + 10) {
-            toast.success("TikTok URL extracted and cleaned from shared content!", {
+          const isPromotionalContent = text.length > cleanedUrl.length + 20; // More than just URL + small buffer
+          
+          if (isPromotionalContent) {
+            setAutoProcessing(true);
+            toast.success("TikTok URL extracted! Starting download...", {
               duration: 2000,
               position: "bottom-center",
               style: {
                 "font-size": "14px",
               },
             });
+            
+            // Auto-start processing for promotional content after a brief delay
+            setTimeout(() => {
+              fetchData();
+            }, 800); // Small delay to let user see the extraction feedback
+            
           } else {
             toast.success("Valid TikTok URL pasted!", {
               duration: 1500,
@@ -270,6 +280,15 @@ function InputScreen({}: Props) {
     } catch (err) {
       toast.error("Clipboard access denied");
     }
+  };
+
+  // Function to cancel auto-processing
+  const cancelAutoProcessing = () => {
+    setAutoProcessing(false);
+    toast.info("Auto-processing cancelled", {
+      duration: 1000,
+      position: "bottom-center",
+    });
   };
 
   const loadAd = () => {
@@ -371,6 +390,16 @@ function InputScreen({}: Props) {
             <form class="flex flex-col md:flex-row items-stretch md:items-center gap-2"
               onSubmit={(e) => {
                 e.preventDefault();
+                
+                // Don't start manual processing if auto-processing is happening
+                if (autoProcessing()) {
+                  toast.info("Auto-processing in progress...", {
+                    duration: 1000,
+                    position: "bottom-center",
+                  });
+                  return;
+                }
+                
                 const currentUrl = url().trim();
                 console.log("=== FORM SUBMISSION ===");
                 console.log("Form submission - URL value:", currentUrl);
@@ -419,7 +448,7 @@ function InputScreen({}: Props) {
                 </button>
               </div>
               <button type="submit" 
-                disabled={loading()}
+                disabled={loading() || autoProcessing()}
                 class="h-14 px-8 bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 disabled:from-gray-500 disabled:to-gray-400 text-white font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2 transform hover:scale-105 disabled:transform-none disabled:cursor-not-allowed">
                 {loading() ? (
                   <>
@@ -428,6 +457,14 @@ function InputScreen({}: Props) {
                       <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
                     </svg>
                     Processing...
+                  </>
+                ) : autoProcessing() ? (
+                  <>
+                    <svg class="animate-pulse h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                      <circle cx="12" cy="12" r="3"/>
+                      <circle cx="12" cy="12" r="6" fill="none" stroke="currentColor" stroke-width="2" opacity="0.5"/>
+                    </svg>
+                    Auto-starting...
                   </>
                 ) : (
                   <>
@@ -440,9 +477,39 @@ function InputScreen({}: Props) {
               </button>
             </form>
             
+            {/* Auto-processing indicator with cancel option */}
+            {autoProcessing() && (
+              <div class="mt-3 p-3 bg-blue-100 border border-blue-300 rounded-lg flex items-center justify-between">
+                <div class="flex items-center gap-2 text-blue-700">
+                  <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none" />
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+                  </svg>
+                  <span class="text-sm font-medium">Auto-processing extracted URL...</span>
+                </div>
+                <button 
+                  onClick={cancelAutoProcessing}
+                  class="text-blue-600 hover:text-blue-800 text-sm underline transition-colors">
+                  Cancel
+                </button>
+              </div>
+            )}
+            
             {/* URL Format Help */}
             <div class="mt-3 text-xs text-white/70">
-              <p>Supported: Direct TikTok URLs, TikTok Lite shared content, vm.tiktok.com, m.tiktok.com - we'll extract the video URL automatically!</p>
+              <p>
+                {autoProcessing() ? (
+                  <span class="flex items-center gap-1">
+                    <svg class="animate-spin h-3 w-3" viewBox="0 0 24 24">
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none" />
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+                    </svg>
+                    Auto-processing TikTok Lite shared content...
+                  </span>
+                ) : (
+                  "Supported: Direct TikTok URLs, TikTok Lite shared content, vm.tiktok.com, m.tiktok.com - we'll extract the video URL automatically!"
+                )}
+              </p>
             </div>
           </div>
         </div>
