@@ -28,6 +28,42 @@ function InputScreen({}: Props) {
   const [error, setError] = createSignal("");
   const [adLoaded, setAdLoaded] = createSignal(false);
 
+  // Function to validate TikTok URL
+  const isValidTikTokUrl = (url: string): boolean => {
+    const tikTokPatterns = [
+      /tiktok\.com/,
+      /douyin/,
+      /vm\.tiktok\.com/,
+      /vt\.tiktok\.com/,
+      /m\.tiktok\.com/
+    ];
+    
+    return tikTokPatterns.some(pattern => pattern.test(url));
+  };
+
+  // Function to suggest URL format fixes
+  const suggestUrlFix = (url: string): string => {
+    if (url.includes('tiktok') && !url.startsWith('http')) {
+      return 'https://' + url;
+    }
+    return url;
+  };
+
+  // Function to clean and format URL for better success rate
+  const cleanTikTokUrl = (url: string): string => {
+    let cleanUrl = url.trim();
+    
+    // Remove tracking parameters that might interfere
+    cleanUrl = cleanUrl.split('?')[0];
+    
+    // Ensure https protocol
+    if (!cleanUrl.startsWith('http')) {
+      cleanUrl = 'https://' + cleanUrl;
+    }
+    
+    return cleanUrl;
+  };
+
   const fetchData = async () => {
     setLoading(true);
     setError("");
@@ -36,9 +72,23 @@ function InputScreen({}: Props) {
       const tiktokUrl = url().trim();
       console.log("=== FRONTEND DEBUG ===");
       console.log("1. Original URL:", tiktokUrl);
+      
+      if (!tiktokUrl) {
+        throw new Error("Please enter a TikTok URL");
+      }
+
+      if (!isValidTikTokUrl(tiktokUrl)) {
+        const suggestedUrl = suggestUrlFix(tiktokUrl);
+        if (suggestedUrl !== tiktokUrl) {
+          setUrl(suggestedUrl);
+          throw new Error(`Invalid TikTok URL. Try: ${suggestedUrl}`);
+        } else {
+          throw new Error("Please enter a valid TikTok URL (tiktok.com, vm.tiktok.com, etc.)");
+        }
+      }
+      
       console.log("2. Encoded URL:", encodeURIComponent(tiktokUrl));
       
-      // Construct the API URL properly
       const apiUrl = `/api/tik.json?url=${encodeURIComponent(tiktokUrl)}`;
       console.log("3. Final API URL:", apiUrl);
       
@@ -54,42 +104,79 @@ function InputScreen({}: Props) {
       
       let json = await res.json();
       
-      // *** LOG THE FULL API RESPONSE ***
       console.log("6. FULL API RESPONSE:");
       console.log(JSON.stringify(json, null, 2));
       
-      // Check if response has debug info
       if (json.debug) {
         console.log("7. DEBUG INFO FROM SERVER:");
         console.log(JSON.stringify(json.debug, null, 2));
       }
       
       if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status} - ${json.error || 'Unknown error'}`);
+        // More specific error messages based on status
+        if (res.status === 400) {
+          throw new Error(json.error || 'Invalid request. Please check your TikTok URL.');
+        } else if (res.status === 404) {
+          throw new Error('Video not found. The video might have been deleted or is private.');
+        } else if (res.status === 500) {
+          throw new Error('Server error. Please try again in a moment.');
+        } else {
+          throw new Error(`HTTP error! status: ${res.status} - ${json.error || 'Unknown error'}`);
+        }
       }
       
-      // Check for error status
       if (json.status === "error" || json.error) {
         throw new Error(json.error || json.message || "Failed to fetch video data");
       }
 
-      // Validate required data exists
       if (!json.result) {
-        throw new Error("No video data found");
+        throw new Error("No video data found. The video might be private or restricted.");
+      }
+
+      // Check if we have any downloadable content
+      const hasVideo = json.result.videoSD || json.result.videoHD || json.result.video_hd || json.result.videoWatermark;
+      const hasAudio = json.result.music;
+      
+      if (!hasVideo && !hasAudio) {
+        throw new Error("No downloadable content found. The video might be protected or unavailable.");
       }
 
       setData(json);
       loadAd();
       setError("");
-    } catch (error) {
-      console.error("=== FETCH ERROR ===", error);
-      toast.error(error.message || "An error occurred while fetching data", {
-        duration: 3000,
+      
+      toast.success("Video loaded successfully!", {
+        duration: 2000,
         position: "bottom-center",
         style: {
           "font-size": "16px",
         },
       });
+      
+    } catch (error) {
+      console.error("=== FETCH ERROR ===", error);
+      
+      let errorMessage = error.message || "An error occurred while fetching data";
+      
+      // Provide helpful suggestions based on error type
+      if (errorMessage.includes("Invalid TikTok URL")) {
+        errorMessage += "\n\nSupported formats:\n• https://www.tiktok.com/@username/video/123456789\n• https://vm.tiktok.com/shortcode/\n• https://m.tiktok.com/v/123456789.html";
+      } else if (errorMessage.includes("private") || errorMessage.includes("restricted")) {
+        errorMessage += "\n\nTip: Try copying the URL directly from the TikTok app or website.";
+      } else if (errorMessage.includes("not found")) {
+        errorMessage += "\n\nThe video might have been deleted or the URL is incorrect.";
+      }
+      
+      toast.error(errorMessage, {
+        duration: 5000,
+        position: "bottom-center",
+        style: {
+          "font-size": "16px",
+          "max-width": "400px",
+          "white-space": "pre-line",
+        },
+      });
+      
       setData(null);
       setError(error.message);
     }
@@ -103,6 +190,19 @@ function InputScreen({}: Props) {
         const text = await navigator.clipboard.readText();
         setUrl(text);
         console.log("Pasted URL:", text);
+        
+        // Auto-validate pasted URL
+        if (text && isValidTikTokUrl(text)) {
+          toast.success("Valid TikTok URL pasted!", {
+            duration: 1500,
+            position: "bottom-center",
+          });
+        } else if (text && text.includes('tiktok')) {
+          toast.error("URL needs correction. Please check the format.", {
+            duration: 2000,
+            position: "bottom-center",
+          });
+        }
       }
     } catch (err) {
       toast.error("Clipboard access denied");
@@ -113,10 +213,8 @@ function InputScreen({}: Props) {
     const adContainer = document.getElementById("ad-banner");
     if (!adContainer) return;
 
-    // Clear previous content
     adContainer.innerHTML = '';
 
-    // Create the AC script if it doesn't exist
     if (!document.getElementById("aclib")) {
       const script = document.createElement("script");
       script.id = "aclib";
@@ -134,7 +232,6 @@ function InputScreen({}: Props) {
       };
       document.body.appendChild(script);
     } else {
-      // Script already exists, just run the banner
       if (typeof aclib !== 'undefined') {
         runAdcashBanner();
       } else {
@@ -181,13 +278,11 @@ function InputScreen({}: Props) {
     if (script) script.remove();
   });
 
-  // Helper function to get video URL safely
   const getVideoUrl = () => {
     const result = data()?.result;
     return result?.videoSD || result?.videoHD || result?.video_hd || result?.videoWatermark || result?.music || "";
   };
 
-  // Helper function to get author info safely
   const getAuthorInfo = () => {
     const author = data()?.result?.author;
     return {
@@ -196,11 +291,17 @@ function InputScreen({}: Props) {
     };
   };
 
+  // Helper to get safe filename for downloads
+  const getSafeFilename = () => {
+    const author = getAuthorInfo().nickname;
+    return author.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 50);
+  };
+
   return (
     <div class="max-w-6xl mx-auto mt-8 px-4">
       <Toaster />
 
-      {/* Input Form Section */}
+      {/* Enhanced Input Form Section */}
       <div class="max-w-6xl mx-auto">
         <div class="download-box rounded-2xl">
           <div class="bg-cyan-800/80 rounded-xl backdrop-blur-md p-4">
@@ -210,19 +311,7 @@ function InputScreen({}: Props) {
                 const currentUrl = url().trim();
                 console.log("=== FORM SUBMISSION ===");
                 console.log("Form submission - URL value:", currentUrl);
-                console.log("URL length:", currentUrl.length);
                 
-                if (!currentUrl) {
-                  toast.error("Please enter a valid URL");
-                  return;
-                }
-                
-                if (!currentUrl.includes("tiktok.com") && !currentUrl.includes("douyin")) {
-                  toast.error("Please enter a valid TikTok URL");
-                  return;
-                }
-                
-                console.log("Calling fetchData...");
                 fetchData();
               }}
             >
@@ -233,9 +322,14 @@ function InputScreen({}: Props) {
                     const newUrl = e.currentTarget.value;
                     console.log("Input changed:", newUrl);
                     setUrl(newUrl);
+                    
+                    // Clear previous error when user starts typing
+                    if (error()) {
+                      setError("");
+                    }
                   }}
-                  placeholder="Paste TikTok video link here"
-                  class="w-full h-14 border-gray-700 text-black rounded-xl px-5 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 flex-1 px-4 py-3 rounded-md focus:ring-2 focus:ring-blue-600"
+                  placeholder="Paste TikTok video link here (tiktok.com, vm.tiktok.com, etc.)"
+                  class="w-full h-14 border-gray-700 text-black rounded-xl px-5 pr-20 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300"
                 />
                 <button type="button" 
                   onClick={handlePaste} 
@@ -246,29 +340,45 @@ function InputScreen({}: Props) {
                   Paste
                 </button>
               </div>
-              <button type="submit" class="h-14 px-8 bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2 transform hover:scale-105">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
-                </svg> 
-                Download
+              <button type="submit" 
+                disabled={loading()}
+                class="h-14 px-8 bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 disabled:from-gray-500 disabled:to-gray-400 text-white font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2 transform hover:scale-105 disabled:transform-none disabled:cursor-not-allowed">
+                {loading() ? (
+                  <>
+                    <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none" />
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+                    </svg>
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                    </svg> 
+                    Download
+                  </>
+                )}
               </button>
             </form>
+            
+            {/* URL Format Help */}
+            <div class="mt-3 text-xs text-white/70">
+              <p>Supported formats: tiktok.com/@user/video/id, vm.tiktok.com/shortcode, m.tiktok.com/v/id.html</p>
+            </div>
           </div>
         </div>
       </div>
 
-      {loading() && (
-        <div class="flex justify-center mt-4">
-          <svg class="animate-spin h-10 w-10 text-blue-600" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none" />
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
-          </svg>
-        </div>
-      )}
-
       {error() && (
-        <div class="mt-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
-          Error: {error()}
+        <div class="mt-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+          <div class="flex items-center gap-2">
+            <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <strong>Error:</strong>
+          </div>
+          <p class="mt-1">{error()}</p>
         </div>
       )}
 
@@ -332,18 +442,18 @@ function InputScreen({}: Props) {
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
                         </svg> 
-                        <a href={`https://dl.tiktokiocdn.workers.dev/api/download?url=${encodeURIComponent(data()!.result!.videoSD!)}&type=.mp4&title=${getAuthorInfo().nickname}`} class="text-white no-underline">
+                        <a href={`https://dl.tiktokiocdn.workers.dev/api/download?url=${encodeURIComponent(data()!.result!.videoSD!)}&type=.mp4&title=${getSafeFilename()}`} class="text-white no-underline">
                           Download SD (No Watermark)
                         </a>
                       </button>
                     )}
 
-                    {data()?.result?.videoHD && (
+                    {(data()?.result?.videoHD || data()?.result?.video_hd) && (
                       <button class="download-button bg-gradient-to-r from-pink-600 to-pink-400 hover:from-pink-500 hover:to-pink-300 w-full p-3 rounded-lg text-white flex items-center justify-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
                         </svg> 
-                        <a href={`https://dl.tiktokiocdn.workers.dev/api/download?url=${encodeURIComponent(data()!.result!.videoHD!)}&type=.mp4&title=${getAuthorInfo().nickname}`} class="text-white no-underline">
+                        <a href={`https://dl.tiktokiocdn.workers.dev/api/download?url=${encodeURIComponent((data()!.result!.videoHD || data()!.result!.video_hd)!)}&type=.mp4&title=${getSafeFilename()}`} class="text-white no-underline">
                           Download HD (No Watermark)
                         </a>
                       </button>
@@ -354,8 +464,19 @@ function InputScreen({}: Props) {
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
                         </svg> 
-                        <a href={`https://dl.tiktokiocdn.workers.dev/api/download?url=${encodeURIComponent(data()!.result!.videoWatermark!)}&type=.mp4&title=${getAuthorInfo().nickname}`} class="text-white no-underline">
+                        <a href={`https://dl.tiktokiocdn.workers.dev/api/download?url=${encodeURIComponent(data()!.result!.videoWatermark!)}&type=.mp4&title=${getSafeFilename()}`} class="text-white no-underline">
                           Download (With Watermark)
+                        </a>
+                      </button>
+                    )}
+
+                    {data()?.result?.music && (
+                      <button class="download-button bg-gradient-to-r from-yellow-600 to-yellow-400 hover:from-yellow-500 hover:to-yellow-300 w-full p-3 rounded-lg text-white flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
+                        </svg> 
+                        <a href={`https://dl.tiktokiocdn.workers.dev/api/download?url=${encodeURIComponent(data()!.result!.music!)}&type=.mp3&title=${getSafeFilename()}_audio`} class="text-white no-underline">
+                          Download Audio Only
                         </a>
                       </button>
                     )}
