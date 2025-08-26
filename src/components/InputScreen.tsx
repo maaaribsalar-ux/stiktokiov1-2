@@ -596,7 +596,9 @@ function InputScreen({}: Props) {
               </div>
             )}
             
-            {/* URL Format Help */}
+            
+          </div>
+          {/* URL Format Help */}
             <div class="mt-3 text-xs text-white/70">
               <p>
                 {autoProcessing() ? (
@@ -612,7 +614,6 @@ function InputScreen({}: Props) {
                 )}
               </p>
             </div>
-          </div>
         </div>
       </div>
 
