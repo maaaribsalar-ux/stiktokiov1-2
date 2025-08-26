@@ -12,7 +12,7 @@ import vercel from "@astrojs/vercel";
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
-  output: "static", 
+  output: "hybrid", 
   site: "https://stiktokio.com",
   adapter: vercel(),
   // Add Astro's built-in i18n configuration
