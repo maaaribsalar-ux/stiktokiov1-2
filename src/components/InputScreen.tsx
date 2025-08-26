@@ -28,6 +28,47 @@ function InputScreen({}: Props) {
   const [error, setError] = createSignal("");
   const [adLoaded, setAdLoaded] = createSignal(false);
 
+  // Function to extract TikTok URL from text that might contain promotional content
+  const extractTikTokUrl = (text: string): string => {
+    // Common TikTok URL patterns
+    const patterns = [
+      // vm.tiktok.com with short codes
+      /https?:\/\/vm\.tiktok\.com\/[A-Za-z0-9]+/g,
+      // vm.tiktok.com with numeric IDs
+      /https?:\/\/vm\.tiktok\.com\/\d+/g,
+      // vt.tiktok.com
+      /https?:\/\/vt\.tiktok\.com\/[A-Za-z0-9]+/g,
+      // Standard tiktok.com URLs
+      /https?:\/\/(?:www\.)?tiktok\.com\/@[^\/\s]*\/video\/\d+/g,
+      // Mobile tiktok URLs
+      /https?:\/\/m\.tiktok\.com\/v\/\d+\.html/g,
+      // Any tiktok.com URL
+      /https?:\/\/[^\/]*tiktok\.com\/[^\s]*/g
+    ];
+
+    console.log("Extracting URL from text:", text);
+    
+    for (const pattern of patterns) {
+      const matches = text.match(pattern);
+      if (matches && matches.length > 0) {
+        // Return the first match, clean it up
+        let url = matches[0];
+        // Remove trailing punctuation that might be part of the sentence
+        url = url.replace(/[.,!?;]+$/, '');
+        console.log("Extracted URL:", url);
+        return url;
+      }
+    }
+
+    // If no pattern matches, check if the text itself is a clean URL
+    const cleanText = text.trim();
+    if (isValidTikTokUrl(cleanText)) {
+      return cleanText;
+    }
+
+    return text; // Return original if no URL found
+  };
+
   // Function to validate TikTok URL
   const isValidTikTokUrl = (url: string): boolean => {
     const tikTokPatterns = [
@@ -52,6 +93,9 @@ function InputScreen({}: Props) {
   // Function to clean and format URL for better success rate
   const cleanTikTokUrl = (url: string): string => {
     let cleanUrl = url.trim();
+    
+    // First extract the TikTok URL if text contains promotional content
+    cleanUrl = extractTikTokUrl(cleanUrl);
     
     // Remove tracking parameters that might interfere
     cleanUrl = cleanUrl.split('?')[0];
@@ -188,18 +232,37 @@ function InputScreen({}: Props) {
       const permission = await navigator.permissions.query({ name: 'clipboard-read' as any });
       if (permission.state === 'granted' || permission.state === 'prompt') {
         const text = await navigator.clipboard.readText();
-        setUrl(text);
-        console.log("Pasted URL:", text);
+        console.log("Pasted raw text:", text);
         
-        // Auto-validate pasted URL
-        if (text && isValidTikTokUrl(text)) {
-          toast.success("Valid TikTok URL pasted!", {
-            duration: 1500,
-            position: "bottom-center",
-          });
+        // Extract and clean the TikTok URL from the pasted text
+        const extractedUrl = extractTikTokUrl(text);
+        const cleanedUrl = cleanTikTokUrl(extractedUrl);
+        
+        console.log("Extracted URL:", extractedUrl);
+        console.log("Cleaned URL:", cleanedUrl);
+        
+        setUrl(cleanedUrl);
+        
+        // Auto-validate pasted URL and provide feedback
+        if (cleanedUrl && isValidTikTokUrl(cleanedUrl)) {
+          // Check if we extracted a URL from text with promotional content
+          if (text.length > cleanedUrl.length + 10) {
+            toast.success("TikTok URL extracted and cleaned from shared content!", {
+              duration: 2000,
+              position: "bottom-center",
+              style: {
+                "font-size": "14px",
+              },
+            });
+          } else {
+            toast.success("Valid TikTok URL pasted!", {
+              duration: 1500,
+              position: "bottom-center",
+            });
+          }
         } else if (text && text.includes('tiktok')) {
-          toast.error("URL needs correction. Please check the format.", {
-            duration: 2000,
+          toast.error("Could not extract a valid TikTok URL from the pasted content.", {
+            duration: 2500,
             position: "bottom-center",
           });
         }
@@ -312,6 +375,21 @@ function InputScreen({}: Props) {
                 console.log("=== FORM SUBMISSION ===");
                 console.log("Form submission - URL value:", currentUrl);
                 
+                // Auto-extract URL if the input contains promotional text
+                if (currentUrl && currentUrl.length > 100 && currentUrl.includes('tiktok')) {
+                  const extractedUrl = extractTikTokUrl(currentUrl);
+                  if (extractedUrl !== currentUrl) {
+                    setUrl(extractedUrl);
+                    toast.info("Extracted TikTok URL from shared content", {
+                      duration: 1500,
+                      position: "bottom-center",
+                    });
+                    // Small delay to let user see the extraction
+                    setTimeout(() => fetchData(), 500);
+                    return;
+                  }
+                }
+                
                 fetchData();
               }}
             >
@@ -328,7 +406,7 @@ function InputScreen({}: Props) {
                       setError("");
                     }
                   }}
-                  placeholder="Paste TikTok video link here (tiktok.com, vm.tiktok.com, etc.)"
+                  placeholder="Paste TikTok video link or shared content here (we'll extract the URL automatically)"
                   class="w-full h-14 border-gray-700 text-black rounded-xl px-5 pr-20 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300"
                 />
                 <button type="button" 
@@ -364,7 +442,7 @@ function InputScreen({}: Props) {
             
             {/* URL Format Help */}
             <div class="mt-3 text-xs text-white/70">
-              <p>Supported formats: tiktok.com/@user/video/id, vm.tiktok.com/shortcode, m.tiktok.com/v/id.html</p>
+              <p>Supported: Direct TikTok URLs, TikTok Lite shared content, vm.tiktok.com, m.tiktok.com - we'll extract the video URL automatically!</p>
             </div>
           </div>
         </div>
