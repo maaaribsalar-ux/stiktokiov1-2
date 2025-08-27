@@ -26,24 +26,25 @@ function InputScreen({}: Props) {
   const [data, setData] = createSignal<TikTokData | null>(null);
   const [loading, setLoading] = createSignal(false);
   const [error, setError] = createSignal("");
-  const [adLoaded, setAdLoaded] = createSignal(false);
   const [autoProcessing, setAutoProcessing] = createSignal(false);
 
   // Function to extract TikTok URL from text that might contain promotional content
   const extractTikTokUrl = (text: string): string => {
-    // Common TikTok URL patterns
+    // Common TikTok URL patterns - updated to handle query parameters and new formats
     const patterns = [
+      // Standard tiktok.com URLs with or without query parameters
+      /https?:\/\/(?:www\.)?tiktok\.com\/@[^\/\s]*\/video\/\d+[^\s]*/g,
+      // TikTok short URLs with /t/ format
+      /https?:\/\/(?:www\.)?tiktok\.com\/t\/[A-Za-z0-9]+[^\s]*/g,
       // vm.tiktok.com with short codes
-      /https?:\/\/vm\.tiktok\.com\/[A-Za-z0-9]+/g,
+      /https?:\/\/vm\.tiktok\.com\/[A-Za-z0-9]+[^\s]*/g,
       // vm.tiktok.com with numeric IDs
-      /https?:\/\/vm\.tiktok\.com\/\d+/g,
+      /https?:\/\/vm\.tiktok\.com\/\d+[^\s]*/g,
       // vt.tiktok.com
-      /https?:\/\/vt\.tiktok\.com\/[A-Za-z0-9]+/g,
-      // Standard tiktok.com URLs
-      /https?:\/\/(?:www\.)?tiktok\.com\/@[^\/\s]*\/video\/\d+/g,
+      /https?:\/\/vt\.tiktok\.com\/[A-Za-z0-9]+[^\s]*/g,
       // Mobile tiktok URLs
-      /https?:\/\/m\.tiktok\.com\/v\/\d+\.html/g,
-      // Any tiktok.com URL
+      /https?:\/\/m\.tiktok\.com\/v\/\d+\.html[^\s]*/g,
+      // Any tiktok.com URL (fallback)
       /https?:\/\/[^\/]*tiktok\.com\/[^\s]*/g
     ];
 
@@ -98,14 +99,28 @@ function InputScreen({}: Props) {
     // First extract the TikTok URL if text contains promotional content
     cleanUrl = extractTikTokUrl(cleanUrl);
     
-    // Remove tracking parameters that might interfere
-    cleanUrl = cleanUrl.split('?')[0];
+    // Remove all query parameters and fragments from desktop/laptop TikTok URLs
+    // Handle parameters like: ?is_from_webapp=1&sender_device=pc&web_id=123456
+    if (cleanUrl.includes('?')) {
+      cleanUrl = cleanUrl.split('?')[0];
+      console.log("Removed query parameters, clean URL:", cleanUrl);
+    }
     
-    // Ensure https protocol
+    // Remove URL fragments (# and everything after)
+    if (cleanUrl.includes('#')) {
+      cleanUrl = cleanUrl.split('#')[0];
+      console.log("Removed fragments, clean URL:", cleanUrl);
+    }
+    
+    // Ensure we have https protocol
     if (!cleanUrl.startsWith('http')) {
       cleanUrl = 'https://' + cleanUrl;
     }
     
+    // Remove any trailing slashes that might cause issues
+    cleanUrl = cleanUrl.replace(/\/+$/, '');
+    
+    console.log("Final cleaned URL:", cleanUrl);
     return cleanUrl;
   };
 
@@ -187,7 +202,7 @@ function InputScreen({}: Props) {
       }
 
       setData(json);
-      loadAd();
+      loadGoogleAd();
       setError("");
       
       toast.success("Video loaded successfully!", {
@@ -318,73 +333,86 @@ function InputScreen({}: Props) {
     });
   };
 
-  const loadAd = () => {
-    const adContainer = document.getElementById("ad-banner");
-    if (!adContainer) return;
-
-    adContainer.innerHTML = '';
-
-    if (!document.getElementById("aclib")) {
-      const script = document.createElement("script");
-      script.id = "aclib";
-      script.src = "https://acscdn.com/script/aclib.js";
-      script.async = true;
-      script.onload = () => {
-        if (typeof aclib !== 'undefined') {
-          runAdcashBanner();
-        } else {
-          showFallbackAd();
-        }
-      };
-      script.onerror = () => {
-        showFallbackAd();
-      };
-      document.body.appendChild(script);
-    } else {
-      if (typeof aclib !== 'undefined') {
-        runAdcashBanner();
-      } else {
-        showFallbackAd();
-      }
-    }
-  };
-
-  const runAdcashBanner = () => {
-    const adContainer = document.getElementById("ad-banner");
-    if (!adContainer) return;
-
+  // Load Google AdSense ad
+  const loadGoogleAd = () => {
     try {
-      adContainer.innerHTML = '<div id="ac-banner"></div>';
-      aclib.runBanner({
-        zoneId: '9480206',
-        width: 336,
-        height: 280,
-        container: document.getElementById("ac-banner")
-      });
-      setAdLoaded(true);
-    } catch (e) {
-      console.error("Adcash error:", e);
-      showFallbackAd();
+      console.log("=== ADSENSE DEBUG ===");
+      console.log("Loading Google AdSense...");
+      
+      // Check if AdSense script is already loaded
+      let adsenseScript = document.querySelector('script[src*="adsbygoogle.js"]');
+      
+      if (!adsenseScript) {
+        console.log("AdSense script not found, loading...");
+        adsenseScript = document.createElement('script');
+        adsenseScript.async = true;
+        adsenseScript.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_PUBLISHER_ID";
+        adsenseScript.crossOrigin = "anonymous";
+        
+        adsenseScript.onload = () => {
+          console.log("AdSense script loaded successfully");
+          initializeAd();
+        };
+        
+        adsenseScript.onerror = () => {
+          console.error("Failed to load AdSense script");
+          showAdPlaceholder();
+        };
+        
+        document.head.appendChild(adsenseScript);
+      } else {
+        console.log("AdSense script already loaded");
+        initializeAd();
+      }
+    } catch (error) {
+      console.error("AdSense loading error:", error);
+      showAdPlaceholder();
     }
   };
 
-  const showFallbackAd = () => {
-    const adContainer = document.getElementById("ad-banner");
-    if (!adContainer) return;
-    
-    adContainer.innerHTML = `
-      <div style="width:336px;height:280px;background:#f5f5f5;display:flex;align-items:center;justify-content:center;border-radius:8px;border:1px dashed #ddd;">
-        <div style="text-align:center;color:#666;">
-          <p>Advertisement</p>
-          <p style="font-size:12px;margin-top:8px;">Ad failed to load.. Please wait</p>
+  // Initialize the AdSense ad
+  const initializeAd = () => {
+    setTimeout(() => {
+      try {
+        console.log("Initializing AdSense ad...");
+        
+        // Check if adsbygoogle is available
+        if (typeof window.adsbygoogle !== 'undefined') {
+          console.log("adsbygoogle is available, pushing ad...");
+          (window.adsbygoogle = window.adsbygoogle || []).push({});
+          console.log("AdSense ad pushed successfully");
+        } else {
+          console.error("adsbygoogle not available");
+          showAdPlaceholder();
+        }
+      } catch (e) {
+        console.error("AdSense initialization error:", e);
+        showAdPlaceholder();
+      }
+    }, 1000); // Longer delay to ensure DOM is ready
+  };
+
+  // Show placeholder when AdSense fails
+  const showAdPlaceholder = () => {
+    const adContainer = document.querySelector('.adsense-container');
+    if (adContainer) {
+      adContainer.innerHTML = `
+        <div style="width:336px;height:280px;background:#f8f9fa;display:flex;align-items:center;justify-content:center;border:2px dashed #dee2e6;border-radius:8px;">
+          <div style="text-align:center;color:#6c757d;padding:20px;">
+            <p style="margin:0;font-size:14px;font-weight:500;">Advertisement Space</p>
+            <p style="margin:5px 0 0;font-size:12px;">Configure AdSense to display ads</p>
+          </div>
         </div>
-      </div>
-    `;
+      `;
+    }
   };
 
   onCleanup(() => {
-    const script = document.getElementById("aclib");
-    if (script) script.remove();
+    // Cleanup AdSense related resources if needed
+    const adsenseScript = document.querySelector('script[src*="adsbygoogle.js"]');
+    if (adsenseScript) {
+      adsenseScript.remove();
+    }
   });
 
   const getVideoUrl = () => {
@@ -413,7 +441,7 @@ function InputScreen({}: Props) {
       {/* Enhanced Input Form Section */}
       <div class="max-w-6xl mx-auto">
         <div class="download-box rounded-2xl">
-          <div class="bg-cyan-800/80 rounded-xl backdrop-blur-md p-4">
+          <div class="bg-pink-50 rounded backdrop-blur-md p-2">
             <form class="flex flex-col md:flex-row items-stretch md:items-center gap-2"
               onSubmit={(e) => {
                 e.preventDefault();
@@ -671,14 +699,16 @@ function InputScreen({}: Props) {
                       {data()?.result?.desc || "No description available"}
                     </div>
                     
-                    {/* Ad Banner Container */}
+                    {/* Google AdSense Ad Container */}
                     <div class="flex justify-center my-4">
-                      <div id="ad-banner" style="min-height:280px;width:336px;margin:0 auto;">
-                        {!adLoaded() && (
-                          <div style="width:336px;height:280px;display:flex;align-items:center;justify-content:center;background:#f5f5f5;border-radius:8px;">
-                            <div class="animate-pulse text-gray-400">Loading advertisement...</div>
-                          </div>
-                        )}
+                      <div class="adsense-container" style="width:336px;margin:0 auto;">
+                        {/* AdSense Ad Unit */}
+                        <ins class="adsbygoogle"
+                             style="display:block;width:336px;height:280px"
+                             data-ad-client="ca-pub-YOUR_PUBLISHER_ID"
+                             data-ad-slot="YOUR_AD_SLOT_ID"
+                             data-ad-format="rectangle"
+                             data-full-width-responsive="false"></ins>
                       </div>
                     </div>
                   </div>
