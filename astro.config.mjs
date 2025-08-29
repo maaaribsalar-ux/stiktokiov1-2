@@ -7,12 +7,11 @@ import alpinejs from "@astrojs/alpinejs";
 import solidJs from "@astrojs/solid-js";
 import AstroPWA from "@vite-pwa/astro";
 import icon from "astro-icon";
-import vercel from "@astrojs/vercel";
-
+import vercel from "@astrojs/vercel/serverless";
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
-  output: "static", 
+  output: "server", 
   site: "https://stiktokio.com",
   adapter: vercel(),
   // Add Astro's built-in i18n configuration
