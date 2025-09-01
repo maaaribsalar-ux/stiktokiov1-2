@@ -346,7 +346,7 @@ function InputScreen({}: Props) {
         console.log("AdSense script not found, loading...");
         adsenseScript = document.createElement('script');
         adsenseScript.async = true;
-        adsenseScript.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_PUBLISHER_ID";
+        adsenseScript.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4342939946293194";
         adsenseScript.crossOrigin = "anonymous";
         
         adsenseScript.onload = () => {
@@ -695,7 +695,7 @@ function InputScreen({}: Props) {
                       </h2>
                       <div class="text-gray-400 text-xs px-2 py-1 bg-white/10 rounded-full"></div>
                     </div>
-                    <div class="text-gray-400 text-xs mb-2">
+                    <div class="text-white text-sm mb-2">
                       {data()?.result?.desc || "No description available"}
                     </div>
                     
@@ -705,8 +705,8 @@ function InputScreen({}: Props) {
                         {/* AdSense Ad Unit */}
                         <ins class="adsbygoogle"
                              style="display:block;width:336px;height:280px"
-                             data-ad-client="ca-pub-YOUR_PUBLISHER_ID"
-                             data-ad-slot="YOUR_AD_SLOT_ID"
+                             data-ad-client="ca-pub-4342939946293194"
+                             data-ad-slot="6558620513"
                              data-ad-format="rectangle"
                              data-full-width-responsive="false"></ins>
                       </div>
