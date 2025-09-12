@@ -6,12 +6,11 @@ import Container from "@components/container.astro";
 import Sectionhead from "@components/sectionhead.astro";
 import Layout from "@layouts/Layout.astro";
 
-// Remove old astro-i18next imports
-// import i18next, { changeLanguage } from "i18next";
-// changeLanguage("en");
 
 // Add new built-in i18n imports
 import { getLangFromUrl, useTranslations } from "../../../i18n/utils";
+
+export const prerender = true;
 
 export async function getStaticPaths() {
 	const posts = await getCollection("blog", ({ data }) => {

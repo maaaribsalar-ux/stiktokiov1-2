@@ -7,6 +7,7 @@ import Sectionhead from "@components/sectionhead.astro";
 import Layout from "@layouts/Layout.astro";
 
 import { getLangFromUrl, useTranslations } from "../../i18n/utils";
+export const prerender = true;
 
 export async function getStaticPaths({ paginate }) {
   try {

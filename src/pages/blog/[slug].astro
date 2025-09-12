@@ -8,6 +8,8 @@ import { getLangFromUrl, useTranslations } from "../../i18n/utils";
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { Icon } from "astro-icon/components";
 
+export const prerender = true;
+
 // Generate a new path for every collection post
 export async function getStaticPaths() {
 	try {

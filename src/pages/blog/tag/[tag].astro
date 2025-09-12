@@ -13,6 +13,8 @@ import Layout from "@layouts/Layout.astro";
 // Add new built-in i18n imports
 import { getLangFromUrl, useTranslations } from "../../../i18n/utils";
 
+export const prerender = true;
+
 export async function getStaticPaths() {
 	const posts = await getCollection("blog", ({ data }) => {
 		return !data.draft && data.publishDate < new Date();
