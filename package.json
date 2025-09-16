@@ -1,6 +1,6 @@
 {
-	"name": "stiktokio",
-	"version": "1.0.0",
+	"name": "ssstiktok",
+	"version": "1.3.5",
 	"type": "module",
 	"private": true,
 	"scripts": {
