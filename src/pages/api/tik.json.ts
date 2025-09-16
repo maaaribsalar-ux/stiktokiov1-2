@@ -2,6 +2,9 @@ import type { APIRoute } from "astro";
 
 export const prerender = false;
 
+// Import the TikTok API library using ES modules syntax
+import TikTok from "@tobyg74/tiktok-api-dl";
+
 // Function to resolve short URLs
 async function resolveShortUrl(url: string): Promise<string> {
   try {
@@ -25,18 +28,75 @@ async function resolveShortUrl(url: string): Promise<string> {
   }
 }
 
-// Multiple API services to try
-async function tryMultipleServices(url: string) {
-  // First resolve short URLs
-  let processedUrl = url;
-  if (url.includes('/t/') || url.includes('vm.tiktok.com')) {
-    processedUrl = await resolveShortUrl(url);
+// Transform the library response to match your existing frontend format
+function transformLibraryResponse(libraryData: any) {
+  const result = libraryData.result;
+  if (!result) return null;
+
+  return {
+    status: "success",
+    result: {
+      type: result.type || (result.images ? "image" : "video"),
+      author: {
+        avatar: result.author?.avatarThumb?.[0] || result.author?.avatarLarger || null,
+        nickname: result.author?.nickname || result.author?.username || "Unknown Author"
+      },
+      desc: result.desc || "No description available",
+      videoSD: result.video?.downloadAddr?.[0] || result.video?.playAddr?.[0] || null,
+      videoHD: result.video?.downloadAddr?.[1] || result.video?.downloadAddr?.[0] || result.video?.playAddr?.[1] || result.video?.playAddr?.[0] || null,
+      video_hd: result.video?.downloadAddr?.[0] || result.video?.playAddr?.[0] || null,
+      videoWatermark: result.video?.playAddr?.[0] || null,
+      music: result.music?.playUrl?.[0] || null,
+      uploadDate: result.createTime ? new Date(result.createTime * 1000).toISOString() : null,
+      images: result.images || null
+    }
+  };
+}
+
+// Try multiple versions of the downloader API
+async function tryLibraryDownloader(url: string) {
+  const versions = ["v1", "v2", "v3"]; // v3 is now fixed in 1.3.5
+  let lastError = null;
+
+  for (const version of versions) {
+    try {
+      console.log(`Trying TikTok library downloader version ${version}...`);
+      
+      const result = await TikTok.Downloader(url, {
+        version: version,
+        showOriginalResponse: false
+      });
+
+      console.log(`Library ${version} response:`, result);
+
+      if (result.status === "success" && result.result) {
+        const transformedData = transformLibraryResponse(result);
+        if (transformedData && transformedData.result) {
+          console.log(`Success with library version ${version}`);
+          return transformedData;
+        }
+      }
+      
+      throw new Error(result.message || `Library version ${version} returned no data`);
+      
+    } catch (error) {
+      console.log(`Library version ${version} failed:`, error.message);
+      lastError = error;
+      
+      // Add delay between attempts
+      await new Promise(resolve => setTimeout(resolve, 500));
+    }
   }
-  
+
+  throw lastError || new Error("All library downloader versions failed");
+}
+
+// Fallback to external services if library fails
+async function fallbackToExternalServices(url: string) {
   const services = [
     {
       name: 'TikWM',
-      url: `https://www.tikwm.com/api/?url=${encodeURIComponent(processedUrl)}`,
+      url: `https://www.tikwm.com/api/?url=${encodeURIComponent(url)}`,
       transform: (data: any) => ({
         status: "success",
         result: {
@@ -53,131 +113,50 @@ async function tryMultipleServices(url: string) {
           music: data.data?.music || null,
           uploadDate: data.data?.create_time ? new Date(data.data.create_time * 1000).toISOString() : null,
           images: data.data?.images || null
-        }
-      })
-    },
-    {
-      name: 'TikWM Alt',
-      url: `https://tikwm.com/api/?url=${encodeURIComponent(processedUrl)}`,
-      transform: (data: any) => ({
-        status: "success",
-        result: {
-          type: data.data?.images ? "image" : "video",
-          author: {
-            avatar: data.data?.author?.avatar || null,
-            nickname: data.data?.author?.unique_id || data.data?.author?.nickname || "Unknown Author"
-          },
-          desc: data.data?.title || "No description available",
-          videoSD: data.data?.play || null,
-          videoHD: data.data?.hdplay || data.data?.play || null,
-          video_hd: data.data?.hdplay || null,
-          videoWatermark: data.data?.wmplay || null,
-          music: data.data?.music || null,
-          uploadDate: data.data?.create_time ? new Date(data.data.create_time * 1000).toISOString() : null,
-          images: data.data?.images || null
-        }
-      })
-    },
-    {
-      name: 'SnapTik API',
-      url: `https://snaptik.app/abc?url=${encodeURIComponent(processedUrl)}`,
-      transform: (data: any) => ({
-        status: "success",
-        result: {
-          type: "video",
-          author: {
-            avatar: data.avatarLarger || null,
-            nickname: data.authorMeta?.name || "Unknown Author"
-          },
-          desc: data.text || "No description available",
-          videoSD: data.collector?.[0]?.url || null,
-          videoHD: data.collector?.[1]?.url || data.collector?.[0]?.url || null,
-          video_hd: data.collector?.[1]?.url || null,
-          videoWatermark: data.collector?.find((item: any) => item.type === 'watermark')?.url || null,
-          music: data.musicMeta?.playUrl || null,
-          uploadDate: data.createTimeISO || null
         }
       })
     }
   ];
-  
-  const userAgents = [
-    'Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Mobile/15E148 Safari/604.1',
-    'Mozilla/5.0 (Linux; Android 10; SM-G975F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36',
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-    'TikTok 26.2.0 rv:262018 (iPhone; iOS 14.4.2; en_US) Cronet'
-  ];
-  
-  let lastError = null;
-  
+
   for (const service of services) {
-    for (const userAgent of userAgents) {
-      try {
-        console.log(`Trying ${service.name} with ${userAgent.split(' ')[0]}...`);
-        
-        const response = await fetch(service.url, {
-          method: 'GET',
-          headers: {
-            'User-Agent': userAgent,
-            'Accept': 'application/json, text/plain, */*',
-            'Accept-Language': 'en-US,en;q=0.9',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'DNT': '1',
-            'Connection': 'keep-alive',
-            'Upgrade-Insecure-Requests': '1',
-            'Sec-Fetch-Dest': 'document',
-            'Sec-Fetch-Mode': 'navigate',
-            'Sec-Fetch-Site': 'none',
-            'Cache-Control': 'max-age=0',
-            'Referer': 'https://www.tiktok.com/',
-            'Origin': 'https://www.tiktok.com'
-          },
-          signal: AbortSignal.timeout(15000)
-        });
-        
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-        
-        const data = await response.json();
-        console.log(`${service.name} response:`, data);
-        
-        // Check if the response indicates success
-        if (service.name.includes('TikWM')) {
-          if (data.code === 0 && data.data) {
-            return service.transform(data);
-          } else {
-            throw new Error(data.msg || `${service.name} returned error code: ${data.code}`);
-          }
-        } else if (service.name.includes('SnapTik')) {
-          if (data && (data.collector || data.videoMeta)) {
-            return service.transform(data);
-          } else {
-            throw new Error(`${service.name} returned invalid data structure`);
-          }
-        }
-        
-      } catch (error) {
-        console.log(`${service.name} failed:`, error.message);
-        lastError = error;
-        
-        // Add delay between attempts to avoid rate limiting
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        continue;
+    try {
+      console.log(`Trying fallback service: ${service.name}`);
+      
+      const response = await fetch(service.url, {
+        method: 'GET',
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Mobile/15E148 Safari/604.1',
+        },
+        signal: AbortSignal.timeout(10000)
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
       }
+
+      const data = await response.json();
+      
+      if (service.name === 'TikWM' && data.code === 0 && data.data) {
+        return service.transform(data);
+      }
+      
+    } catch (error) {
+      console.log(`${service.name} fallback failed:`, error.message);
     }
   }
-  
-  throw lastError || new Error("All API services failed");
+
+  throw new Error("All fallback services also failed");
 }
 
 export const GET: APIRoute = async (context) => {
   try {
-    console.log("=== TikTok API Request ===");
+    console.log("=== TikTok API Request (Library Version) ===");
     
     const url = context.url.searchParams.get("url");
+    
     console.log("Requested URL:", url);
     
+    // Handle download request
     if (!url) {
       return new Response(JSON.stringify({
         error: "URL parameter is required",
@@ -199,12 +178,35 @@ export const GET: APIRoute = async (context) => {
       });
     }
     
-    console.log("Starting API requests...");
-    const data = await tryMultipleServices(url);
+    // First resolve short URLs
+    let processedUrl = url;
+    if (url.includes('/t/') || url.includes('vm.tiktok.com')) {
+      processedUrl = await resolveShortUrl(url);
+    }
+    
+    console.log("Starting download with library...");
+    
+    let data;
+    try {
+      // First try the official library
+      data = await tryLibraryDownloader(processedUrl);
+    } catch (libraryError) {
+      console.log("Library failed, trying fallback services...");
+      console.log("Library error:", libraryError.message);
+      
+      try {
+        // Fallback to external services if library completely fails
+        data = await fallbackToExternalServices(processedUrl);
+        console.log("Fallback service succeeded");
+      } catch (fallbackError) {
+        console.log("All services failed");
+        throw libraryError; // Throw original library error
+      }
+    }
     
     // Validate result
     if (!data || !data.result) {
-      throw new Error("No data returned from API services");
+      throw new Error("No data returned from any service");
     }
     
     // Check for downloadable content
@@ -228,7 +230,7 @@ export const GET: APIRoute = async (context) => {
       status: 200,
       headers: {
         "Content-Type": "application/json",
-        "Cache-Control": "public, max-age=300", // 5 minute cache
+        "Cache-Control": "public, max-age=300",
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Methods": "GET",
         "Access-Control-Allow-Headers": "Content-Type"
@@ -242,7 +244,7 @@ export const GET: APIRoute = async (context) => {
     let statusCode = 500;
     
     if (error.message.includes("403")) {
-      errorMessage = "TikTok is currently blocking requests. Please try again later or use a different URL format.";
+      errorMessage = "TikTok is currently blocking requests. Please try again later.";
       statusCode = 403;
     } else if (error.message.includes("404")) {
       errorMessage = "Video not found. It may be private, deleted, or the URL is incorrect.";
