@@ -1,74 +1,9 @@
 import type { APIRoute } from "astro";
 
+export const prerender = false;
+
 // Import the TikTok API library using ES modules syntax
 import TikTok from "@tobyg74/tiktok-api-dl";
-
-// Define TypeScript interfaces for TikTok API responses based on tiktok-api-dl documentation
-interface TiktokAPIResponse {
-  status: "success" | "error";
-  message?: string;
-  result?: {
-    type: "video" | "image";
-    id: string;
-    createTime: number;
-    desc: string;
-    author: {
-      uid: number;
-      username: string;
-      nickname: string;
-      avatarThumb: string[];
-      avatarMedium: string[];
-    };
-    video?: {
-      downloadAddr: string[];
-      playAddr: string[];
-    };
-    images?: string[];
-    music: {
-      playUrl: string[];
-    };
-  };
-}
-
-interface SSSTikResponse {
-  status: "success" | "error";
-  message?: string;
-  result?: {
-    type: "image" | "video" | "music";
-    desc?: string;
-    author?: {
-      avatar: string;
-      nickname: string;
-    };
-    video?: {
-      playAddr: string;
-    };
-    images?: string[];
-    music?: {
-      playUrl: string;
-    };
-  };
-}
-
-interface MusicalDownResponse {
-  status: "success" | "error";
-  message?: string;
-  result?: {
-    type: "video" | "image";
-    desc?: string;
-    author?: {
-      avatar?: string;
-      nickname?: string;
-    };
-    videoHD?: string;
-    videoWatermark?: string;
-    images?: string[];
-    music?: string;
-  };
-}
-
-// Union type for all possible responses
-type TikTokResponse = TiktokAPIResponse | SSSTikResponse | MusicalDownResponse;
 
 // Function to resolve short URLs
 async function resolveShortUrl(url: string): Promise<string> {
@@ -81,90 +16,55 @@ async function resolveShortUrl(url: string): Promise<string> {
       headers: {
         'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Mobile/15E148 Safari/604.1',
       },
-      signal: AbortSignal.timeout(10000),
+      signal: AbortSignal.timeout(10000)
     });
     
     const resolvedUrl = response.url;
     console.log("Resolved to:", resolvedUrl);
     return resolvedUrl;
-  } catch (error: any) {
+  } catch (error) {
     console.log("URL resolution failed:", error.message);
     return url; // Return original if resolution fails
   }
 }
 
 // Transform the library response to match your existing frontend format
-function transformLibraryResponse(libraryData: TikTokResponse) {
+function transformLibraryResponse(libraryData: any) {
   const result = libraryData.result;
   if (!result) return null;
-
-  // Handle different response structures based on version
-  const isV1 = 'id' in result && 'createTime' in result;
-  const isV2 = 'type' in result && result.type === ('image' || 'video' || 'music');
-  const isV3 = 'videoHD' in result || 'videoWatermark' in result;
 
   return {
     status: "success",
     result: {
       type: result.type || (result.images ? "image" : "video"),
       author: {
-        avatar: isV1
-          ? (result as TiktokAPIResponse['result'])?.author?.avatarThumb?.[0] || (result as TiktokAPIResponse['result'])?.author?.avatarMedium?.[0] || null
-          : isV2
-          ? (result as SSSTikResponse['result'])?.author?.avatar || null
-          : (result as MusicalDownResponse['result'])?.author?.avatar || null,
-        nickname: isV1
-          ? (result as TiktokAPIResponse['result'])?.author?.nickname || (result as TiktokAPIResponse['result'])?.author?.username || "Unknown Author"
-          : isV2
-          ? (result as SSSTikResponse['result'])?.author?.nickname || "Unknown Author"
-          : (result as MusicalDownResponse['result'])?.author?.nickname || "Unknown Author",
+        avatar: result.author?.avatarThumb?.[0] || result.author?.avatarLarger || null,
+        nickname: result.author?.nickname || result.author?.username || "Unknown Author"
       },
       desc: result.desc || "No description available",
-      videoSD: isV1
-        ? (result as TiktokAPIResponse['result'])?.video?.downloadAddr?.[0] || (result as TiktokAPIResponse['result'])?.video?.playAddr?.[0] || null
-        : isV2
-        ? (result as SSSTikResponse['result'])?.video?.playAddr || null
-        : (result as MusicalDownResponse['result'])?.videoWatermark || null,
-      videoHD: isV1
-        ? (result as TiktokAPIResponse['result'])?.video?.downloadAddr?.[1] || (result as TiktokAPIResponse['result'])?.video?.downloadAddr?.[0] || (result as TiktokAPIResponse['result'])?.video?.playAddr?.[1] || (result as TiktokAPIResponse['result'])?.video?.playAddr?.[0] || null
-        : isV2
-        ? (result as SSSTikResponse['result'])?.video?.playAddr || null
-        : (result as MusicalDownResponse['result'])?.videoHD || (result as MusicalDownResponse['result'])?.videoWatermark || null,
-      video_hd: isV1
-        ? (result as TiktokAPIResponse['result'])?.video?.downloadAddr?.[0] || (result as TiktokAPIResponse['result'])?.video?.playAddr?.[0] || null
-        : isV2
-        ? (result as SSSTikResponse['result'])?.video?.playAddr || null
-        : (result as MusicalDownResponse['result'])?.videoHD || null,
-      videoWatermark: isV1
-        ? (result as TiktokAPIResponse['result'])?.video?.playAddr?.[0] || null
-        : isV2
-        ? (result as SSSTikResponse['result'])?.video?.playAddr || null
-        : (result as MusicalDownResponse['result'])?.videoWatermark || null,
-      music: isV1
-        ? (result as TiktokAPIResponse['result'])?.music?.playUrl?.[0] || null
-        : isV2
-        ? (result as SSSTikResponse['result'])?.music?.playUrl || null
-        : (result as MusicalDownResponse['result'])?.music || null,
-      uploadDate: isV1
-        ? (result as TiktokAPIResponse['result'])?.createTime ? new Date((result as TiktokAPIResponse['result']).createTime * 1000).toISOString() : null
-        : null, // V2 and V3 may not provide createTime
-      images: result.images || null,
-    },
+      videoSD: result.video?.downloadAddr?.[0] || result.video?.playAddr?.[0] || null,
+      videoHD: result.video?.downloadAddr?.[1] || result.video?.downloadAddr?.[0] || result.video?.playAddr?.[1] || result.video?.playAddr?.[0] || null,
+      video_hd: result.video?.downloadAddr?.[0] || result.video?.playAddr?.[0] || null,
+      videoWatermark: result.video?.playAddr?.[0] || null,
+      music: result.music?.playUrl?.[0] || null,
+      uploadDate: result.createTime ? new Date(result.createTime * 1000).toISOString() : null,
+      images: result.images || null
+    }
   };
 }
 
 // Try multiple versions of the downloader API
-async function tryLibraryDownloader(url: string): Promise<any> {
-  const versions = ["v1", "v2", "v3"];
-  let lastError: Error | null = null;
+async function tryLibraryDownloader(url: string) {
+  const versions = ["v1", "v2", "v3"]; // v3 is now fixed in 1.3.5
+  let lastError = null;
 
   for (const version of versions) {
     try {
       console.log(`Trying TikTok library downloader version ${version}...`);
       
       const result = await TikTok.Downloader(url, {
-        version: version as "v1" | "v2" | "v3",
-        showOriginalResponse: false,
+        version: version,
+        showOriginalResponse: false
       });
 
       console.log(`Library ${version} response:`, result);
@@ -179,7 +79,7 @@ async function tryLibraryDownloader(url: string): Promise<any> {
       
       throw new Error(result.message || `Library version ${version} returned no data`);
       
-    } catch (error: any) {
+    } catch (error) {
       console.log(`Library version ${version} failed:`, error.message);
       lastError = error;
       
@@ -192,7 +92,7 @@ async function tryLibraryDownloader(url: string): Promise<any> {
 }
 
 // Fallback to external services if library fails
-async function fallbackToExternalServices(url: string): Promise<any> {
+async function fallbackToExternalServices(url: string) {
   const services = [
     {
       name: 'TikWM',
@@ -203,7 +103,7 @@ async function fallbackToExternalServices(url: string): Promise<any> {
           type: data.data?.images ? "image" : "video",
           author: {
             avatar: data.data?.author?.avatar || null,
-            nickname: data.data?.author?.unique_id || data.data?.author?.nickname || "Unknown Author",
+            nickname: data.data?.author?.unique_id || data.data?.author?.nickname || "Unknown Author"
           },
           desc: data.data?.title || "No description available",
           videoSD: data.data?.play || null,
@@ -212,10 +112,10 @@ async function fallbackToExternalServices(url: string): Promise<any> {
           videoWatermark: data.data?.wmplay || null,
           music: data.data?.music || null,
           uploadDate: data.data?.create_time ? new Date(data.data.create_time * 1000).toISOString() : null,
-          images: data.data?.images || null,
-        },
-      }),
-    },
+          images: data.data?.images || null
+        }
+      })
+    }
   ];
 
   for (const service of services) {
@@ -227,7 +127,7 @@ async function fallbackToExternalServices(url: string): Promise<any> {
         headers: {
           'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Mobile/15E148 Safari/604.1',
         },
-        signal: AbortSignal.timeout(10000),
+        signal: AbortSignal.timeout(10000)
       });
 
       if (!response.ok) {
@@ -240,7 +140,7 @@ async function fallbackToExternalServices(url: string): Promise<any> {
         return service.transform(data);
       }
       
-    } catch (error: any) {
+    } catch (error) {
       console.log(`${service.name} fallback failed:`, error.message);
     }
   }
@@ -260,10 +160,10 @@ export const GET: APIRoute = async (context) => {
     if (!url) {
       return new Response(JSON.stringify({
         error: "URL parameter is required",
-        status: "error",
+        status: "error"
       }), {
         status: 400,
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" }
       });
     }
     
@@ -271,10 +171,10 @@ export const GET: APIRoute = async (context) => {
     if (!url.includes("tiktok.com") && !url.includes("douyin")) {
       return new Response(JSON.stringify({
         error: "Invalid URL. Please provide a valid TikTok URL.",
-        status: "error",
+        status: "error"
       }), {
         status: 400,
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" }
       });
     }
     
@@ -290,7 +190,7 @@ export const GET: APIRoute = async (context) => {
     try {
       // First try the official library
       data = await tryLibraryDownloader(processedUrl);
-    } catch (libraryError: any) {
+    } catch (libraryError) {
       console.log("Library failed, trying fallback services...");
       console.log("Library error:", libraryError.message);
       
@@ -298,7 +198,7 @@ export const GET: APIRoute = async (context) => {
         // Fallback to external services if library completely fails
         data = await fallbackToExternalServices(processedUrl);
         console.log("Fallback service succeeded");
-      } catch (fallbackError: any) {
+      } catch (fallbackError) {
         console.log("All services failed");
         throw libraryError; // Throw original library error
       }
@@ -317,10 +217,10 @@ export const GET: APIRoute = async (context) => {
     if (!hasVideo && !hasAudio && !hasImages) {
       return new Response(JSON.stringify({
         error: "This video appears to be private, deleted, or not available for download.",
-        status: "error",
+        status: "error"
       }), {
         status: 404,
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" }
       });
     }
     
@@ -333,11 +233,11 @@ export const GET: APIRoute = async (context) => {
         "Cache-Control": "public, max-age=300",
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Methods": "GET",
-        "Access-Control-Allow-Headers": "Content-Type",
-      },
+        "Access-Control-Allow-Headers": "Content-Type"
+      }
     });
     
-  } catch (error: any) {
+  } catch (error) {
     console.error("=== Final Error ===", error);
     
     let errorMessage = "Unable to process TikTok video.";
@@ -361,10 +261,10 @@ export const GET: APIRoute = async (context) => {
       error: errorMessage,
       status: "error",
       details: error.message,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }), {
       status: statusCode,
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json" }
     });
   }
 };
