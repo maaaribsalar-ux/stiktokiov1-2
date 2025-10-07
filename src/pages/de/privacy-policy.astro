@@ -1,0 +1,257 @@
+---
+import Layout from "@layouts/Layout.astro";
+
+// Remove old astro-i18next imports
+// import { localizePath } from "astro-i18next";
+// import { changeLanguage } from "i18next";
+// changeLanguage("en");
+
+// Add new built-in i18n imports
+import { getLangFromUrl, useTranslations } from "../../i18n/utils";
+
+import { getRelativeLocaleUrl } from "astro:i18n";
+
+// Get current language and create translation function
+const safeUrl = Astro.url || new URL('/', Astro.site || 'http://localhost:4321');
+const lang = getLangFromUrl(safeUrl);
+const t = useTranslations(lang);
+
+// Helper function to create localized paths
+function localizePath(path: string) {
+	if (!path || (path && path.startsWith('http')) || path === '#') return path;
+	return getRelativeLocaleUrl(lang, path);
+}
+
+const title = "Datenschutzrichtlinie - Tiktokio";
+---
+
+<Layout title="Datenschutzrichtlinie - Willkommen bei TikTokio">
+	<section class="items-center h-full p-16">
+	<div class="relative p-4">
+    <div class="max-w-6xl mx-auto">
+        <div
+            class="mt-3 bg-white rounded-b lg:rounded-b-none lg:rounded-r flex flex-col justify-between leading-normal">
+            <div class="">
+               
+                <h2 class="text-gray-900 font-bold text-4xl">Datenschutzrichtlinie - Tiktokio</h2>
+                <div class="py-5 text-sm font-regular text-gray-900 flex">
+                    <span class="mr-3 flex flex-row items-center">
+                       <svg class="text-indigo-600" fill="currentColor" height="13px" width="13px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve"><g>
+	<g>
+		<path d="M256,0C114.837,0,0,114.837,0,256s114.837,256,256,256s256-114.837,256-256S397.163,0,256,0z M277.333,256
+			c0,11.797-9.536,21.333-21.333,21.333h-85.333c-11.797,0-21.333-9.536-21.333-21.333s9.536-21.333,21.333-21.333h64v-128
+		                   	c0-11.797,9.536-21.333,21.333-21.333s21.333,9.536,21.333,21.333V256z"></path></g></g></svg>
+                      <span class="ml-1">Zuletzt aktualisiert: 23. August 2025</span>
+                    </span>
+                   
+                </div>
+                <hr>
+                <p class="text-base leading-8 my-5">
+                    Willkommen bei TikTokio, Ihrer ultimativen Destination zum Herunterladen von TikTok-Videos ohne Wasserzeichen, vollständig kostenlos und mühelos einfach. 
+					          Diese Datenschutzrichtlinie beschreibt unsere Richtlinien und Verfahren zur Sammlung, Nutzung und Offenlegung Ihrer Informationen, wenn Sie den Dienst nutzen 
+                    und informiert Sie über Ihre Datenschutzrechte und wie das Gesetz Sie schützt. Wir verwenden Ihre personenbezogenen Daten, um den Dienst bereitzustellen und zu verbessern. 
+                    Durch die Nutzung des Dienstes stimmen Sie der Sammlung und Nutzung von Informationen gemäß dieser Datenschutzrichtlinie zu. 
+                </p>
+
+                <h2 class="text-2xl font-bold my-5">Interpretation und Definitionen</h2>
+                <h3 class="text-xl font-bold my-5">Interpretation</h3>
+
+                <p class="text-base leading-8 my-5">
+                    Die Wörter, deren Anfangsbuchstabe großgeschrieben ist, haben Bedeutungen, die unter den folgenden Bedingungen definiert sind. 
+                    Die folgenden Definitionen haben die gleiche Bedeutung, unabhängig davon, ob sie im Singular oder Plural erscheinen.
+                </p>
+                <h3 class="text-xl font-bold my-5">Definitionen</h3>
+                <p class="text-base leading-8 my-5">
+                    Zu den Zwecken dieser Datenschutzrichtlinie:
+                    <ul class="max-w-6xl space-y-1 text-base leading-8 my-5">
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                            <strong>Konto</strong> bedeutet ein einzigartiges Konto, das für Sie erstellt wird, um auf unseren Dienst oder Teile unseres Dienstes zuzugreifen.
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                            <strong>Konto</strong> bedeutet ein einzigartiges Konto, das für Sie erstellt wird, um auf unseren Dienst oder Teile unseres Dienstes zuzugreifen.
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                            Tochtergesellschaft bedeutet eine Einheit, die kontrolliert, kontrolliert wird oder unter gemeinsamer Kontrolle mit einer Partei steht, wobei "Kontrolle" den Besitz von 50 % oder mehr der Aktien, Beteiligungen oder anderen Wertpapieren bedeutet, die berechtigt sind, für die Wahl von Direktoren oder anderen leitenden Behörden abzustimmen.
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                            Unternehmen (in dieser Vereinbarung als "das Unternehmen", "Wir", "Uns" oder "Unser" bezeichnet) bezieht sich auf Tiktokio.
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                            Cookies sind kleine Dateien, die von einer Website auf Ihrem Computer, Mobilgerät oder einem anderen Gerät platziert werden und Details zu Ihrem Browsing-Verlauf auf dieser Website unter vielen anderen Verwendungen enthalten.
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                            Land bezieht sich auf: New York, Vereinigte Staaten.
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                            Gerät bedeutet jedes Gerät, das auf den Dienst zugreifen kann, wie z. B. ein Computer, ein Mobiltelefon oder ein digitales Tablet.
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                            Personenbezogene Daten sind alle Informationen, die sich auf eine identifizierte oder identifizierbare natürliche Person beziehen.
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                            Dienst bezieht sich auf die Website.
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                            Dienstleister bedeutet jede natürliche oder juristische Person, die Daten im Namen des Unternehmens verarbeitet. Es bezieht sich auf Drittanbieter-Unternehmen oder -Personen, die vom Unternehmen beschäftigt werden, um den Dienst zu erleichtern, den Dienst im Namen des Unternehmens bereitzustellen, Dienstleistungen im Zusammenhang mit dem Dienst zu erbringen oder dem Unternehmen bei der Analyse der Nutzung des Dienstes zu helfen.
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                            Drittanbieter-Social-Media-Dienst bezieht sich auf jede Website oder jedes Social-Network-Website, über die ein Nutzer sich anmelden oder ein Konto erstellen kann, um den Dienst zu nutzen.
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                            Nutzungsdaten beziehen sich auf automatisch gesammelte Daten, entweder durch die Nutzung des Dienstes generiert oder aus der Infrastruktur des Dienstes selbst (z. B. die Dauer eines Seitenbesuchs).
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                            Website bezieht sich auf Tiktokio, erreichbar von <a href="https://tiktokio.cam" rel="external nofollow noopener" target="_blank">https://tiktokio.cam</a>
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                            Sie bedeutet die natürliche Person, die den Dienst nutzt oder darauf zugreift, oder das Unternehmen oder die andere juristische Person, in deren Namen diese natürliche Person den Dienst nutzt oder darauf zugreift, je nach Anwendbarkeit.
+                        </li>
+    
+</ul>
+                </p>
+
+                <h2 class="text-2xl font-bold my-5">Sammlung und Nutzung Ihrer personenbezogenen Daten</h2>
+                <h3 class="text-xl font-bold my-5">Arten gesammelter Daten</h3>
+                <strong>Personenbezogene Daten</strong>
+
+                <p class="text-base leading-8 my-5">
+                    Während der Nutzung unseres Dienstes können wir Sie bitten, uns bestimmte personenbezogene Informationen bereitzustellen, die zur Kontaktaufnahme oder Identifizierung verwendet werden können. Personenbezogene Informationen können, sind aber nicht beschränkt auf:
+
+                  <ul class="max-w-6xl space-y-1 text-base leading-8 my-5">
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                            E-Mail-Adresse
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                            Nutzungsdaten
+                       </li>
+                        
+                </ul>
+
+                </p>
+        <h3 class="text-2xl font-bold my-5">Nutzungsdaten</h3>
+                <p class="text-base leading-8 my-5">
+                    Nutzungsdaten werden automatisch bei der Nutzung des Dienstes gesammelt. Nutzungsdaten können Informationen wie die Internet-Protokoll-Adresse Ihres Geräts 
+                    (z. B. IP-Adresse), Browsertyp, Browser-Version, die Seiten unseres Dienstes, die Sie besuchen, die Zeit und das Datum Ihres Besuchs, die Zeit, die auf diesen Seiten verbracht wird, 
+                    eindeutige Gerätekennungen und andere Diagnosedaten umfassen. Wenn Sie den Dienst über ein Mobilgerät nutzen, 
+                    können wir bestimmte Informationen automatisch sammeln, einschließlich, aber nicht beschränkt auf, den Typ des Mobilgeräts, das Sie verwenden, 
+                    die eindeutige ID Ihres Mobilgeräts, die IP-Adresse Ihres Mobilgeräts, Ihr mobiles Betriebssystem, den Typ des mobilen Internet-Browsers, den Sie verwenden, 
+                    eindeutige Gerätekennungen und andere Diagnosedaten. Wir können auch Informationen sammeln, die Ihr Browser sendet, wann immer Sie unseren Dienst besuchen oder wenn 
+                    Sie den Dienst über ein Mobilgerät nutzen.
+                </p>
+      <h3 class="text-2xl font-bold my-5">Tracking-Technologien und Cookies</h3>
+                <p class="text-base leading-8 my-5">
+                    Wir verwenden Cookies und ähnliche Tracking-Technologien, um die Aktivität auf unserem Dienst zu verfolgen und bestimmte Informationen zu speichern. Verwendete Tracking-Technologien sind Beacons, Tags und Skripte, um Informationen zu sammeln und zu verfolgen und unseren Dienst zu verbessern und zu analysieren. Die von uns verwendeten Technologien können umfassen:
+                </p>
+                <ul class="max-w-6xl space-y-1 text-base leading-8 my-5">
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                            Cookies oder Browser-Cookies: Ein Cookie ist eine kleine Datei, die auf Ihrem Gerät platziert wird. Sie können Ihren Browser anweisen, alle Cookies zu verweigern oder anzuzeigen, wann ein Cookie gesendet wird. Wenn Sie jedoch Cookies nicht akzeptieren, können Sie möglicherweise einige Teile unseres Dienstes nicht nutzen. Sofern Sie Ihre Browser-Einstellungen nicht so angepasst haben, dass sie Cookies verweigern, kann unser Dienst Cookies verwenden.
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                              Web-Beacons: Bestimmte Abschnitte unseres Dienstes und unserer E-Mails können kleine elektronische Dateien enthalten, die als Web-Beacons bekannt sind (auch als klare GIFs, Pixel-Tags und Single-Pixel-GIFs bezeichnet), die es dem Unternehmen ermöglichen, z. B. Nutzer zu zählen, die diese Seiten besucht oder eine E-Mail geöffnet haben, und für andere verwandte Website-Statistiken (z. B. Aufzeichnung der Beliebtheit eines bestimmten Abschnitts und Überprüfung der System- und Server-Integrität).
+                       </li>
+                </ul>
+
+            <h3 class="text-2xl font-bold my-5">Offenlegung Ihrer personenbezogenen Daten</h3>
+            <ul class="max-w-6xl space-y-1 text-base leading-8 my-5">
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                            Geschäftliche Transaktionen: Wenn das Unternehmen in eine Fusion, Übernahme oder den Verkauf von Vermögenswerten verwickelt ist, können Ihre personenbezogenen Daten übertragen werden. Wir werden Sie benachrichtigen, bevor Ihre personenbezogenen Daten übertragen und einer anderen Datenschutzrichtlinie unterworfen werden.
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                              Strafverfolgung: Unter bestimmten Umständen kann das Unternehmen verpflichtet sein, Ihre personenbezogenen Daten offenzulegen, wenn dies gesetzlich vorgeschrieben ist oder als Reaktion auf gültige Anfragen öffentlicher Behörden (z. B. ein Gericht oder eine Regierungsbehörde).
+                       </li>
+                </ul>
+                <p class="text-base leading-8 my-5">
+                    Das Unternehmen kann Ihre personenbezogenen Daten in gutem Glauben offenlegen, wenn es glaubt, dass eine solche Handlung notwendig ist, um:
+                <ul class="max-w-6xl space-y-1 text-base leading-8 my-5">
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                            Einer gesetzlichen Verpflichtung nachzukommen
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                            Die Rechte oder das Eigentum des Unternehmens zu schützen und zu verteidigen
+                       </li>
+                       <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                            Mögliche Fehlverhalten im Zusammenhang mit dem Dienst zu verhindern oder zu untersuchen
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                            Die persönliche Sicherheit der Nutzer des Dienstes oder der Öffentlichkeit zu schützen
+                       </li>
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                            Gegen rechtliche Haftung zu schützen
+                       </li>
+                </ul>
+
+                </p>
+                <h3 class="text-2xl font-bold my-5">Sicherheit Ihrer personenbezogenen Daten</h3>
+                <p class="text-base leading-8 my-5">
+                    Die Sicherheit Ihrer personenbezogenen Daten ist für uns wichtig, aber denken Sie daran, dass keine Übertragungsmethode über das Internet oder elektronische Speichermethode zu 100 % sicher ist. Obwohl wir uns bemühen, kommerziell akzeptable Mittel zur Sicherung Ihrer personenbezogenen Daten zu verwenden, können wir ihre absolute Sicherheit nicht garantieren.
+                </p>
+                <h2 class="text-3xl font-bold my-5">Datenschutz für Kinder</h2>
+                <p class="text-base leading-8 my-5">
+                        Unser Dienst richtet sich nicht an Personen unter 13 Jahren. Wir sammeln wissentlich keine personenbezogenen Informationen von Personen unter 13 Jahren. 
+                        Wenn Sie ein Elternteil oder Vormund sind und Sie wissen, dass Ihr Kind uns personenbezogene Daten zur Verfügung gestellt hat, kontaktieren Sie uns bitte. 
+                        Wenn wir uns bewusst werden, dass wir personenbezogene Daten von einer Person unter 13 Jahren ohne Überprüfung der Einwilligung der Eltern gesammelt haben, 
+                        nehmen wir Maßnahmen, um diese Informationen von unseren Servern zu entfernen. Wenn wir uns auf die Einwilligung als rechtliche Grundlage für die Verarbeitung Ihrer Informationen stützen müssen und Ihr Land die Einwilligung eines Elternteils erfordert, können wir die Einwilligung Ihres Elternteils verlangen, bevor wir diese Informationen sammeln und verwenden.
+                </p>
+                <h2 class="text-3xl font-bold my-5">Links zu anderen Websites</h2>
+                <p class="text-base leading-8 my-5">
+                       Unser Dienst kann Links zu anderen Websites enthalten, die nicht von uns betrieben werden. Wenn Sie auf einen Link eines Drittanbieters klicken, werden Sie zu der Website dieses Drittanbieters weitergeleitet. 
+                       Wir raten Ihnen dringend, die Datenschutzrichtlinie jeder Website, die Sie besuchen, zu überprüfen.
+                      Wir haben keine Kontrolle über und übernehmen keine Verantwortung für den Inhalt, die Datenschutzrichtlinien oder die Praktiken von Websites oder Diensten Dritter.
+                </p>
+                <h2 class="text-3xl font-bold my-5">Änderungen an dieser Datenschutzrichtlinie</h2>
+                <p class="text-base leading-8 my-5">
+                        Wir können unsere Datenschutzrichtlinie von Zeit zu Zeit aktualisieren. Wir werden Sie über alle Änderungen informieren, indem wir die neue Datenschutzrichtlinie auf dieser Seite veröffentlichen.
+                        Wir werden Sie per E-Mail und/oder durch eine prominente Mitteilung auf unserem Dienst informieren, bevor die Änderung wirksam wird, und das Datum "Zuletzt aktualisiert" oben in dieser Datenschutzrichtlinie aktualisieren.
+                        Es wird empfohlen, diese Datenschutzrichtlinie regelmäßig zu überprüfen, um Änderungen zu erfahren. Änderungen an dieser Datenschutzrichtlinie werden wirksam, sobald sie auf dieser Seite veröffentlicht werden.
+                </p>
+                <h2 class="text-3xl font-bold my-5">Kontaktieren Sie uns</h2>
+                <p class="text-base leading-8 my-5">
+                    Wenn Sie Fragen zu dieser Datenschutzrichtlinie haben, können Sie uns kontaktieren:
+
+
+                        <ul class="max-w-6xl space-y-1 text-base leading-8 my-5">
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                            Per E-Mail: help@tiktokio.cam
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                            Durch Besuch dieser Seite auf unserer Website: <a href="https://tiktokio.cam/contact" rel="external nofollow noopener" target="_blank">https://tiktokio.cam/contact</a>
+                            </li>
+                </p>
+            </div>
+
+
+
+        </div>
+    </div>
+</div>
+
+
+	</section>
+</Layout>
