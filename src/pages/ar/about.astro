@@ -1,0 +1,256 @@
+---
+import Layout from "@layouts/Layout.astro";
+
+// Remove old astro-i18next imports
+// import { localizePath } from "astro-i18next";
+// import { changeLanguage } from "i18next";
+// changeLanguage("en");
+
+// Add new built-in i18n imports
+import { getLangFromUrl, useTranslations } from "../i18n/utils";
+import { getRelativeLocaleUrl } from "astro:i18n";
+
+// Get current language and create translation function
+const safeUrl = Astro.url || new URL('/', Astro.site || 'http://localhost:4321');
+const lang = getLangFromUrl(safeUrl);
+const t = useTranslations(lang);
+
+// Helper function to create localized paths
+function localizePath(path: string) {
+	if (!path || (path && path.startsWith('http')) || path === '#') return path;
+	return getRelativeLocaleUrl(lang, path);
+}
+
+const title = "سياسة الخصوصية - TikTokio";
+---
+
+<Layout title="سياسة الخصوصية - مرحبا بك في TikTokio">
+	<section class="items-center h-full p-16">
+	<div class="relative p-4">
+    <div class="max-w-6xl mx-auto">
+        <div
+            class="mt-3 bg-white rounded-b lg:rounded-b-none lg:rounded-r flex flex-col justify-between leading-normal">
+            <div class="">
+               
+                <h2 class="text-gray-900 font-bold text-4xl">سياسة الخصوصية - TikTokio</h2>
+                <div class="py-5 text-sm font-regular text-gray-900 flex">
+                    <span class="mr-3 flex flex-row items-center">
+                       <svg class="text-indigo-600" fill="currentColor" height="13px" width="13px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve"><g>
+	<g>
+		<path d="M256,0C114.837,0,0,114.837,0,256s114.837,256,256,256s256-114.837,256-256S397.163,0,256,0z M277.333,256
+			c0,11.797-9.536,21.333-21.333,21.333h-85.333c-11.797,0-21.333-9.536-21.333-21.333s9.536-21.333,21.333-21.333h64v-128
+		                   	c0-11.797,9.536-21.333,21.333-21.333s21.333,9.536,21.333,21.333V256z"></path></g></g></svg>
+                      <span class="ml-1">آخر تحديث: 23 أغسطس 2025</span>
+                    </span>
+                   
+                </div>
+                <hr>
+                <p class="text-base leading-8 my-5">
+                    مرحبا بك في TikTokio، وجهتك النهائية لتنزيل فيديوهات TikTok بدون علامات مائية، مجانًا تمامًا وبطريقة بسيطة بلا عناء. 
+					          توضح سياسة الخصوصية هذه سياساتنا وإجراءاتنا بشأن جمع واستخدام وكشف معلوماتك عند استخدامك للخدمة، 
+                    وتخبرك بحقوقك في الخصوصية وكيف تحميك القوانين. نستخدم بياناتك الشخصية لتقديم الخدمة وتحسينها. 
+                    باستخدام الخدمة، توافق على جمع واستخدام المعلومات وفقًا لهذه سياسة الخصوصية. 
+                </p>
+
+                <h2 class="text-2xl font-bold my-5">التفسير والتعريفات</h2>
+                <h3 class="text-xl font-bold my-5">التفسير</h3>
+
+                <p class="text-base leading-8 my-5">
+                    الكلمات التي يبدأ حرفها الأول بحرف كبير لها معاني محددة تحت الشروط التالية. 
+                    ستكون التعريفات التالية لها نفس المعنى بغض النظر عما إذا كانت تظهر في المفرد أو الجمع.
+                </p>
+                <h3 class="text-xl font-bold my-5">التعريفات</h3>
+                <p class="text-base leading-8 my-5">
+                    لغرض هذه سياسة الخصوصية:
+                    <ul class="max-w-6xl space-y-1 text-base leading-8 my-5">
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                            <strong>الحساب</strong> يعني حسابًا فريدًا يتم إنشاؤه لك للوصول إلى خدمتنا أو أجزاء من خدمتنا.
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                            <strong>الحساب</strong> يعني حسابًا فريدًا يتم إنشاؤه لك للوصول إلى خدمتنا أو أجزاء من خدمتنا.
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                            الشركة التابعة تعني كيانًا يسيطر عليه أو يسيطر عليه أو يخضع للسيطرة المشتركة مع طرف، حيث يعني "السيطرة" ملكية 50% أو أكثر من الأسهم أو الحصص أو الأوراق المالية الأخرى المؤهلة للتصويت في انتخاب المديرين أو السلطة الإدارية الأخرى.
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                            الشركة (يشار إليها إما بـ"الشركة" أو "نحن" أو "لدينا" في هذه الاتفاقية) تشير إلى Tiktokio.
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                            الكوكيز هي ملفات صغيرة توضع على جهازك الحاسوبي أو الجهاز المحمول أو أي جهاز آخر بواسطة موقع ويب، تحتوي على تفاصيل تاريخ تصفحك على ذلك الموقع بين استخداماتها العديدة.
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                            الدولة تشير إلى: نيويورك، الولايات المتحدة.
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                            الجهاز يعني أي جهاز يمكنه الوصول إلى الخدمة مثل حاسوب أو هاتف محمول أو لوحة رقمية.
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                            البيانات الشخصية هي أي معلومات تتعلق بشخص معين أو قابل للتحديد.
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                            الخدمة تشير إلى الموقع الإلكتروني.
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                            مقدم الخدمة يعني أي شخص طبيعي أو قانوني يعالج البيانات نيابة عن الشركة. يشير إلى الشركات أو الأفراد الثالثين الذين يوظفهم الشركة لتسهيل الخدمة أو تقديم الخدمة نيابة عن الشركة أو أداء خدمات متعلقة بالخدمة أو مساعدة الشركة في تحليل كيفية استخدام الخدمة.
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                            خدمة وسائل التواصل الاجتماعي الثالثة تشير إلى أي موقع إلكتروني أو أي موقع شبكة اجتماعية يمكن للمستخدم من خلالها تسجيل الدخول أو إنشاء حساب لاستخدام الخدمة.
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                            بيانات الاستخدام تشير إلى البيانات التي يتم جمعها تلقائيًا، إما المولودة من استخدام الخدمة أو من بنية الخدمة نفسها (على سبيل المثال، مدة زيارة صفحة).
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                            الموقع الإلكتروني يشير إلى Tiktokio، المتاح من <a href="https://tiktokio.cam" rel="external nofollow noopener" target="_blank">https://tiktokio.cam</a>
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                            أنت تعني الفرد الذي يصل إلى الخدمة أو يستخدمها، أو الشركة أو الكيان القانوني الآخر الذي يصل إليه أو يستخدمه هذا الفرد نيابة عنه، حسب الاقتضاء.
+                        </li>
+    
+</ul>
+                </p>
+
+                <h2 class="text-2xl font-bold my-5">جمع واستخدام بياناتك الشخصية</h2>
+                <h3 class="text-xl font-bold my-5">أنواع البيانات المجموعة</h3>
+                <strong>البيانات الشخصية</strong>
+
+                <p class="text-base leading-8 my-5">
+                    أثناء استخدام خدمتنا، قد نطلب منك تقديم معلومات شخصية معينة يمكن استخدامها للتواصل معك أو تحديد هويتك. قد تشمل المعلومات الشخصية المعروفة، لكنها غير محدودة بـ:
+
+                  <ul class="max-w-6xl space-y-1 text-base leading-8 my-5">
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                            عنوان البريد الإلكتروني
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                            بيانات الاستخدام
+                       </li>
+                        
+                </ul>
+
+                </p>
+        <h3 class="text-2xl font-bold my-5">بيانات الاستخدام</h3>
+                <p class="text-base leading-8 my-5">
+                    يتم جمع بيانات الاستخدام تلقائيًا عند استخدام الخدمة. قد تشمل بيانات الاستخدام معلومات مثل عنوان بروتوكول الإنترنت لجهازك 
+                    (مثل عنوان IP)، نوع المتصفح، إصدار المتصفح، الصفحات التي تزورها في خدمتنا، وقت وتاريخ زيارتك، الوقت الذي تقضيه على تلك الصفحات، 
+                    معرفات الجهاز الفريدة وبيانات تشخيصية أخرى. عند الوصول إلى الخدمة من خلال جهاز محمول، 
+                    قد نجمع معلومات معينة تلقائيًا، بما في ذلك، لكنها غير محدودة، نوع الجهاز المحمول الذي تستخدمه، 
+                    معرف الجهاز المحمول الفريد، عنوان IP لجهازك المحمول، نظام التشغيل المحمول، نوع متصفح الإنترنت المحمول الذي تستخدمه، 
+                    معرفات الجهاز الفريدة وبيانات تشخيصية أخرى. قد نجمع أيضًا المعلومات التي يرسلها متصفحك كلما زرت خدمتنا أو عندما 
+                    تتصل بالخدمة من خلال جهاز محمول.
+                </p>
+      <h3 class="text-2xl font-bold my-5">تقنيات التتبع والكوكيز</h3>
+                <p class="text-base leading-8 my-5">
+                    نستخدم الكوكيز وتقنيات التتبع المشابهة لتتبع النشاط على خدمتنا وحفظ معلومات معينة. التقنيات المستخدمة في التتبع هي الإشارات، العلامات، والسكريبتات لجمع وتتبع المعلومات ولتحسين وتحليل خدمتنا. قد تشمل التقنيات التي نستخدمها:
+                </p>
+                <ul class="max-w-6xl space-y-1 text-base leading-8 my-5">
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                            الكوكيز أو كوكيز المتصفح: الكوكي هو ملف صغير يوضع على جهازك. يمكنك تعليم متصفحك برفض جميع الكوكيز أو إشارة إلى متى يتم إرسال كوكي. ومع ذلك، إذا لم تقبل الكوكيز، قد لا تتمكن من استخدام بعض أجزاء خدمتنا. ما لم تقم بتعديل إعدادات متصفحك بحيث يرفض الكوكيز، قد تستخدم خدمتنا الكوكيز.
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                              الإشارات الويب: قد تحتوي أقسام معينة من خدمتنا وبريدنا الإلكتروني على ملفات إلكترونية صغيرة تُعرف باسم الإشارات الويب (وتُشار إليها أيضًا باسم صور GIF الواضحة، علامات البكسل، وصور GIF أحادية البكسل) التي تسمح للشركة، على سبيل المثال، بحساب عدد المستخدمين الذين زاروا تلك الصفحات أو فتحوا بريدًا إلكترونيًا ولأغراض إحصائية أخرى متعلقة بالموقع (على سبيل المثال، تسجيل شعبية قسم معين والتحقق من سلامة النظام والخادم).
+                       </li>
+                </ul>
+
+            <h3 class="text-2xl font-bold my-5">كشف بياناتك الشخصية</h3>
+            <ul class="max-w-6xl space-y-1 text-base leading-8 my-5">
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                            المعاملات التجارية: إذا كانت الشركة متورطة في اندماج أو استحواذ أو بيع أصول، قد يتم نقل بياناتك الشخصية. سنقدم إشعارًا قبل نقل بياناتك الشخصية وتعرضها لسياسة خصوصية مختلفة.
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                              إنفاذ القانون: في ظروف معينة، قد تكون الشركة مطالبة بكشف بياناتك الشخصية إذا طُلب منها ذلك بموجب القانون أو ردًا على طلبات صالحة من السلطات العامة (مثل محكمة أو وكالة حكومية).
+                       </li>
+                </ul>
+                <p class="text-base leading-8 my-5">
+                    قد تكشف الشركة عن بياناتك الشخصية في الاعتقاد الطيب بأن هذا الإجراء ضروري لـ:
+                <ul class="max-w-6xl space-y-1 text-base leading-8 my-5">
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                            الامتثال لالتزام قانوني
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                            حماية وحماية حقوق أو ممتلكات الشركة
+                       </li>
+                       <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                            منع أو التحقيق في أي مخالفة محتملة فيما يتعلق بالخدمة
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                            حماية سلامة مستخدمي الخدمة الشخصية أو الجمهور
+                       </li>
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                            الحماية من المسؤولية القانونية
+                       </li>
+                </ul>
+
+                </p>
+                <h3 class="text-2xl font-bold my-5">أمان بياناتك الشخصية</h3>
+                <p class="text-base leading-8 my-5">
+                    أمان بياناتك الشخصية مهم بالنسبة لنا، لكن تذكر أن لا طريقة للنقل عبر الإنترنت، أو طريقة للتخزين الإلكتروني آمنة بنسبة 100%. بينما نسعى لاستخدام وسائل مقبولة تجاريًا لحماية بياناتك الشخصية، لا يمكننا ضمان أمانها المطلق.
+                </p>
+                <h2 class="text-3xl font-bold my-5">خصوصية الأطفال</h2>
+                <p class="text-base leading-8 my-5">
+                        لا تتوجه خدمتنا إلى أي شخص تحت سن 13 عامًا. لا نجمع معلومات شخصية معروفة من أي شخص تحت سن 13 عامًا عن علم. 
+                        إذا كنت أحد الوالدين أو الوصي وأنت مدرك أن طفلك قد قدم لنا بيانات شخصية، يرجى الاتصال بنا. 
+                        إذا أصبحنا مدركين بأننا جمعنا بيانات شخصية من أي شخص تحت سن 13 عامًا دون التحقق من موافقة الوالدين، 
+                        نتخذ خطوات لإزالة تلك المعلومات من خوادمنا. إذا احتجنا إلى الاعتماد على الموافقة كأساس قانوني لمعالجة معلوماتك وبلدك يتطلب موافقة من والد، قد نطلب موافقة والدك قبل جمعنا واستخدام تلك المعلومات.
+                </p>
+                <h2 class="text-3xl font-bold my-5">روابط إلى مواقع أخرى</h2>
+                <p class="text-base leading-8 my-5">
+                       قد تحتوي خدمتنا على روابط إلى مواقع أخرى غير المدارة من قبلنا. إذا نقرت على رابط طرف ثالث، سيتم توجيهك إلى موقع ذلك الطرف الثالث. 
+                       ننصحك بشدة بمراجعة سياسة الخصوصية لكل موقع تزوره.
+                      ليس لدينا سيطرة ولا نتولى مسؤولية محتوى أو سياسات الخصوصية أو الممارسات لأي مواقع أو خدمات طرف ثالث.
+                </p>
+                <h2 class="text-3xl font-bold my-5">التغييرات في سياسة الخصوصية هذه</h2>
+                <p class="text-base leading-8 my-5">
+                        قد نحدث سياسة خصوصيتنا من وقت لآخر. سنخطرك بأي تغييرات عن طريق نشر سياسة الخصوصية الجديدة على هذه الصفحة.
+                        سنخبرك عبر البريد الإلكتروني و/أو إشعار بارز على خدمتنا، قبل أن يصبح التغيير نافذًا ونحدث تاريخ "آخر تحديث" في أعلى سياسة الخصوصية هذه.
+                        يُنصحك بمراجعة سياسة الخصوصية هذه دوريًا لأي تغييرات. التغييرات في سياسة الخصوصية هذه تكون نافذة عند نشرها على هذه الصفحة.
+                </p>
+                <h2 class="text-3xl font-bold my-5">اتصل بنا</h2>
+                <p class="text-base leading-8 my-5">
+                    إذا كان لديك أي أسئلة حول سياسة الخصوصية هذه، يمكنك الاتصال بنا:
+
+
+                        <ul class="max-w-6xl space-y-1 text-base leading-8 my-5">
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                            بالبريد الإلكتروني: help@tiktokio.cam
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
+                            بزيارة هذه الصفحة على موقعنا الإلكتروني: <a href="https://tiktokio.cam/contact" rel="external nofollow noopener" target="_blank">https://tiktokio.cam/contact</a>
+                            </li>
+                </p>
+            </div>
+
+
+
+        </div>
+    </div>
+</div>
+
+
+	</section>
+</Layout>
