@@ -1,4 +1,6 @@
 ---
+export const prerender = true;
+
 import { getCollection } from "astro:content";
 import Container from "@components/container.astro";
 import Layout from "@layouts/Layout.astro";
@@ -7,8 +9,6 @@ import { getArticleReadingTime } from "@utils/blog";
 import { getLangFromUrl, useTranslations } from "../../i18n/utils";
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { Icon } from "astro-icon/components";
-
-export const prerender = true;
 
 // Generate a new path for every collection post
 export async function getStaticPaths() {
@@ -95,24 +95,19 @@ const blogUrl = localizePath("/blog");
 <Layout title={post.data.title} lang={lang}>
 	<Container>
 		<div class="mx-auto prose prose-lg dark:prose-invert mt-14">
-			<a
-				href={categoryUrl}
-				class="text-blue-400 dark:text-stone-400 uppercase tracking-wider text-sm font-medium no-underline hover:underline">
-				{post.data.category}
-			</a>
+			<div class="text-blue-400 dark:text-stone-400 uppercase tracking-wider text-sm font-medium">{post.data.category}</div>
 			<h1 class="text-4xl mb-3 lg:text-5xl font-bold lg:tracking-tight mt-1 lg:leading-tight dark:text-white">
 				{post.data.title}
 			</h1>
 			<div class="flex gap-2 items-center">
-				<div class="w-full md:w-auto flex flex-wrap gap-3">
-					{
-						post.data.tags && post.data.tags.map((tag) => (
-							<a href={localizePath(`/blog/tag/${tag?.toLowerCase()}`)} class="text-sm text-gray-500 dark:text-stone-300 hover:underline">
-								#{tag}
-							</a>
-						))
-					}
-				</div>
+				<div class="w-full md:w-auto flex flex-wrap gap-3">	{
+		post.data.tags && post.data.tags.map((tag) => (
+			<span class="text-sm text-gray-500 dark:text-stone-300">
+				#{tag}
+			</span>
+		))
+	}
+</div>
 			</div>
 			<div class="flex gap-2 mt-4 items-center flex-wrap md:flex-nowrap">
 				<span class="text-gray-400 dark:text-stone-400">
