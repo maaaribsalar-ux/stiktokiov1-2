@@ -17,7 +17,7 @@ export default defineConfig({
   // Add Astro's built-in i18n configuration
   i18n: {
     defaultLocale: "en",
-    locales: ["en", "it", "ar", "fr", "de", "es", "hi", "id", "ru", "pt", "ko", "tl", "nl", "ms", "tr"],
+    locales: ["en"],
     routing: {
       prefixDefaultLocale: false,
     },
@@ -25,7 +25,7 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
     define: {
-      __DATE__: `'${new Date().toISOString()}'`,
+      __DATE__: '2025-10-08T00:00:00.000Z',
     },
     // Minimal configuration - just exclude the problematic library from client build
     ssr: {
@@ -39,7 +39,7 @@ export default defineConfig({
     sitemap({
       filter(page) {
         const url = new URL(page, 'https://stiktokio.com');
-        const nonEnglishLangs = ['ar', 'it', 'de', 'es', 'fr', 'hi', 'id', 'ko', 'ms', 'nl', 'pt', 'ru', 'tl', 'tr'];
+        const nonEnglishLangs = [];
         const shouldExclude =
           nonEnglishLangs.some(lang =>
             url.pathname.startsWith(`/${lang}/blog/`) &&
