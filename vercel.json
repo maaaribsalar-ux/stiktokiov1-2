@@ -1,5 +1,10 @@
 {
   "redirects": [
+    // Redirect /en/* to /* (strip prefix for default locale)
+    { "source": "/en", "destination": "/", "permanent": true },
+    { "source": "/en/:path*", "destination": "/:path*", "permanent": true },
+
+    // Existing redirects for unsupported locales (keep these; remove pairs when enabling a language)
     { "source": "/ar", "destination": "/", "permanent": true },
     { "source": "/ar/:path*", "destination": "/", "permanent": true },
     { "source": "/de", "destination": "/", "permanent": true },
