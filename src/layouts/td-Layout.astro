@@ -76,10 +76,7 @@ const hrefLangs = generateHrefLangs();
 		<meta name="generator" content={Astro.generator} />
 		<meta name="theme-color" content="#ffffff" />
 		
-		<!-- Generate hreflang links manually -->
-		{hrefLangs.map(({ lang, href }) => (
-			<link rel="alternate" hreflang={lang} href={href} />
-		))}
+		
 		
 		<ViewTransitions />
 		<!-- Global CSS -->
