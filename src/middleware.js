@@ -1,18 +1,22 @@
 import { defineMiddleware } from 'astro:middleware';
 
-const unsupportedLocales = ['it', 'ar', 'fr', 'de', 'es', 'hi', 'id', 'ru', 'pt', 'ko', 'tl', 'nl', 'ms', 'tr'];  // Remove as you add languages
+const unsupportedLocales = ['it', 'ar', 'fr', 'de', 'es', 'hi', 'id', 'ru', 'pt', 'ko', 'tl', 'nl', 'ms', 'tr'];
 
 export default defineMiddleware((context, next) => {
   const { pathname } = context.url;
   
-  // Check for unsupported locale prefixes (e.g., /it or /it/about)
   for (const locale of unsupportedLocales) {
     if (pathname === `/${locale}` || pathname.startsWith(`/${locale}/`)) {
-      // Permanent redirect to homepage
-      return Response.redirect('/', 301);
+      // Permanent redirect to homepage using standard Web Response API
+      return new Response(null, {
+        status: 301,
+        headers: {
+          Location: '/',
+        },
+      });
     }
   }
   
-  // Allow the request to proceed (e.g., English routes)
+  // Proceed with the request
   return next();
 });
