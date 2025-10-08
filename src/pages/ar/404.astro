@@ -16,7 +16,7 @@ function localizePath(path: string) {
 	return getRelativeLocaleUrl(lang, path);
 }
 
-const title = `Error 404`;
+const title = `خطأ ٤٠٤`;
 ---
 
 <Layout title="404" dir={lang === 'ar' ? 'rtl' : 'ltr'}>
@@ -24,12 +24,12 @@ const title = `Error 404`;
 		<div class="container flex flex-col items-center justify-center px-5 mx-auto my-8">
 			<div class="max-w-md text-center">
 				<h2 class="mb-8 font-bold text-9xl">
-					<span class="sr-only">Error</span>
-					<span class="text-primary">404</span>
+					<span class="sr-only">خطأ</span>
+					<span class="text-primary">٤٠٤</span>
 				</h2>
-				<p class="text-3xl font-semibold md:text-3xl">Sorry, we couldn't find this page.</p>
-				<p class="mt-4 mb-8 text-lg text-muted dark:text-slate-400">But dont worry, you can find plenty of other things on our homepage.</p>
-				<a rel="noopener noreferrer" href={localizePath("/")} class="btn ml-4">Back to homepage</a>
+				<p class="text-3xl font-semibold md:text-3xl">.عذرًا، لم نتمكن من العثور على هذه الصفحة</p>
+				<p class="mt-4 mb-8 text-lg text-muted dark:text-slate-400">.لا تقلق، يمكنك العثور على العديد من الميزات الأخرى على صفحتنا الرئيسية</p>
+				<a rel="noopener noreferrer" href={localizePath("/")} class="btn ml-4">العودة إلى الصفحة الرئيسية</a>
 			</div>
 		</div>
 	</section>
