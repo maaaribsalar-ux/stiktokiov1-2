@@ -14,6 +14,11 @@ const t = useTranslations(lang);
 // Helper function to create localized paths
 function localizePath(path: string) {
 	if (!path || (path && path.startsWith('http')) || path === '#') return path;
+	
+	// Omit prefix for default locale "en"; use Astro helper for others
+	if (lang === 'en') {
+		return path;
+	}
 	return getRelativeLocaleUrl(lang, path);
 }
 ---
