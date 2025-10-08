@@ -26,18 +26,22 @@ function localizePath(path: string) {
 export const menuitems = [
   {
     titleKey: "header.blog_link",
+    ariaLabelKey: "header.blog_link", // Descriptive aria-label key for accessibility (e.g., "View blog posts on TikTok tips")
     path: "/blog/how-to-save-tiktok-videos-without-watermark",
   },
   {
     titleKey: "header.nav_1",
+    ariaLabelKey: "header.nav_1", // Descriptive aria-label key (e.g., "TikTok video downloader tool")
     path: "/tiktok-downloader",
   },
   {
     titleKey: "header.nav_2",
+    ariaLabelKey: "header.nav_2", // Descriptive aria-label key (e.g., "Download TikTok videos without watermark")
     path: "/download-tiktok-video",
   },
   {
     titleKey: "header.nav_3",
+    ariaLabelKey: "header.nav_3", // Descriptive aria-label key (e.g., "Free TikTok video downloader online")
     path: "/tiktok-video-downloader",
   },
 ];
@@ -146,6 +150,7 @@ export const menuitems = [
                       style="hover"
                       size="sm"
                       class="block"
+                      aria-label={subitem.ariaLabelKey ? t(subitem.ariaLabelKey) : (subitem.titleKey ? t(subitem.titleKey) : subitem.title)}
                       x-data="{ isActive: false }"
                       x-init={`() => {
 												const path = $el.getAttribute('data-path');
@@ -171,6 +176,7 @@ export const menuitems = [
               href={localizePath(item.path)}
               style="hover"
               size="sm"
+              aria-label={item.ariaLabelKey ? t(item.ariaLabelKey) : (item.titleKey ? t(item.titleKey) : item.title)}
               x-data="{ isActive: false }"
               x-init={`() => {
 								const path = $el.getAttribute('data-path');
