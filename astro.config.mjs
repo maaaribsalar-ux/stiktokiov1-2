@@ -7,7 +7,7 @@ import alpinejs from "@astrojs/alpinejs";
 import solidJs from "@astrojs/solid-js";
 import AstroPWA from "@vite-pwa/astro";
 import icon from "astro-icon";
-import vercel from "@astrojs/vercel/serverless";
+import vercel from "@astrojs/vercel";
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
@@ -25,7 +25,7 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
     define: {
-      __DATE__: '2025-10-08T00:00:00.000Z',
+      __DATE__: `'${new Date().toISOString()}'`,
     },
     // Minimal configuration - just exclude the problematic library from client build
     ssr: {
