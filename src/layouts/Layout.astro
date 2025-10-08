@@ -75,10 +75,7 @@ const hrefLangs = generateHrefLangs();
 		<meta name="generator" content={Astro.generator} />
 		<meta name="theme-color" content="#ffffff" />
 		
-		<!-- Generate hreflang links manually -->
-		{hrefLangs.map(({ lang, href }) => (
-			<link rel="alternate" hreflang={lang} href={href} />
-		))}
+
 		
 		<!-- Adcash Library -->
 		<script id="aclib" type="text/javascript" src="https://acscdn.com/script/aclib.js"></script>
