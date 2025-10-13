@@ -95,7 +95,12 @@ const blogUrl = localizePath("/blog");
 <Layout title={post.data.title} lang={lang}>
 	<Container>
 		<div class="mx-auto prose prose-lg dark:prose-invert mt-14">
-			<div class="text-blue-400 dark:text-stone-400 uppercase tracking-wider text-sm font-medium">{post.data.category}</div>
+			<a
+				href={categoryUrl}
+				class="text-blue-400 dark:text-stone-400 uppercase tracking-wider text-sm font-medium no-underline hover:underline">
+				{post.data.category}
+			</a>
+			
 			<h1 class="text-4xl mb-3 lg:text-5xl font-bold lg:tracking-tight mt-1 lg:leading-tight dark:text-white">
 				{post.data.title}
 			</h1>
