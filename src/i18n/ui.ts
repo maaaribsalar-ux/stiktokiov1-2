@@ -140,9 +140,9 @@ export const ui = {
     'newsletter.heading2_sec1': 'Why Tiktokio',
     'newsletter.heading2_sec2': 'Tiktok Video Downloader',
     'newsletter.heading2_sec3': 'is So Popular',
-    'newsletter.popular_int': 'Tiktokio, a simple and powerful',
+    'newsletter.popular_int': 'Tiktokio, a powerful',
     'newsletter.popular_int_link': 'Tiktok video downloader',
-    'newsletter.popular_text': 'that lets users enjoy content offline, watermark-free and without account restrictions. This is what makes Tiktokio so popular and how you can use it effortlessly.',
+    'newsletter.popular_text': ' to download Tiktok Video without watermark. Tiktok is Free online TikTok downloader for HD videos. No app, no sign-up. 100% safe & fast. This is what makes Tiktokio so popular and how you can use it effortlessly.',
     'newsletter.popular_heading1': 'No Watermarks',
     'newsletter.heading1_text': 'Tiktokio - Tiktok Downloader removes all watermarks, giving you clean, original quality Tiktok videos and photos to save and share',
     'newsletter.popular_heading2': 'Lightning-Fast Downloads',
@@ -2662,3 +2662,4 @@ ar: {
   
 
 } as const;
+
